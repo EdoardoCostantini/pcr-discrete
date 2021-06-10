@@ -30,7 +30,7 @@ runCell <- function(cond, parms,
 
   dat_disc <- scale(cbind(z1 = dat_cont[,1], dat_disc)) # scale it
 
-  # Study discretized data
+  # Generate Continuous Data w/ attenuated relationships
   Sigma <- cor(dat_disc)
   mu <- colMeans(dat_disc)
   dat_disc_cont <- MASS::mvrnorm(parms$N, mu, Sigma)
