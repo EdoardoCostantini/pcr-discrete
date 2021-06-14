@@ -10,8 +10,9 @@
                  "MASS",
                  "lavaan",
                  "rlecuyer",
-                 "parallel")
-  
+                 "parallel",
+                 "MLmetrics")
+
   lapply(pack_list, library, character.only = TRUE, verbose = FALSE)
 
 # Load Functions ----------------------------------------------------------
