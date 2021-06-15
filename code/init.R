@@ -11,7 +11,8 @@
                  "lavaan",
                  "rlecuyer",
                  "parallel",
-                 "MLmetrics")
+                 "MLmetrics",
+                 "PCAmixdata")
 
   lapply(pack_list, library, character.only = TRUE, verbose = FALSE)
 
@@ -31,8 +32,8 @@
   parms    <- list()
 
   # Generic
-  parms$outDir <- paste0("../output/", format(Sys.time(), "%Y%d%m_%H%M%S"), "/")
-    dir.create(parms$outDir)
+  # parms$outDir <- paste0("../output/", format(Sys.time(), "%Y%d%m_%H%M%S"), "/")
+  #   dir.create(parms$outDir)
   parms$dt_rep <- 500
 
   # Seed related

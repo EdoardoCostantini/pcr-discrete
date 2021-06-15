@@ -2,14 +2,13 @@
 ### Project:  Ordinality
 ### Author:   Edoardo Costantini
 ### Created:  2021-06-10
-### Modified: 2021-06-10
+### Modified: 2021-06-15
 ### Note:     doRep performs a single run of fun_runCell for every condition
 
 ## Run one replication of the simulation:
-doRep <- function(rp, conds, parms, verbose = FALSE) {
+doRep <- function(rp, conds, parms, settings) {
   ## For internals
   # rp = 1
-  # verbose = FALSE
 
   ## Set seed
   .lec.SetPackageSeed(rep(parms$seed, 6))
@@ -21,7 +20,7 @@ doRep <- function(rp, conds, parms, verbose = FALSE) {
   # parms$rep_counter <- parms$rep_counter + 1 # increase progres report counter
   cat(paste0(Sys.time(), " - Starts Repetition: ", rp, 
              "\n"),
-      file = paste0(parms$outDir, "report.txt"),
+      file = paste0(settings$outDir, settings$fileName_progress, ".txt"),
       append = TRUE)
 
 # Cycle through conditions ------------------------------------------------
@@ -32,6 +31,7 @@ doRep <- function(rp, conds, parms, verbose = FALSE) {
       # Try running simulation for condition i, repetition rp
       runCell(cond = conds[i, ],
               parms = parms,
+              settings = settings,
               rp = rp)
     },
       error = function(report) {

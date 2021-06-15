@@ -7,7 +7,9 @@
 ###           The function in this script generates 1 data set, performs 
 ###           imputations for every condition in the set.
 
-runCell <- function(cond, parms, 
+runCell <- function(cond,
+                    parms,
+                    settings,
                     rp) {
 
 # Example Internals -------------------------------------------------------
@@ -98,7 +100,7 @@ runCell <- function(cond, parms,
 
   ## Return it
   saveRDS(output,
-          file = paste0(parms$outDir,
+          file = paste0(settings$outDir,
                         "rep", rp,
                         "_cond", cond$tag,
                         ".rds")

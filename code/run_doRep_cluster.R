@@ -12,7 +12,7 @@ source("./init.R")
 ## Extract command line arguments
 # args <- commandArgs(trailingOnly = TRUE)
 # rp   <- as.numeric(args[1]) # replication rp = 1 to desired
-# parms$outDir <- args[2]   # overwrite output directory w/ user supplied
+# settings$outDir <- args[2]   # overwrite output directory w/ user supplied
 
 ## Run one replication of the simulation:
 doRep(rp = rp, conds = conds, parms = parms)
