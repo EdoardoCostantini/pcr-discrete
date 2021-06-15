@@ -2,7 +2,7 @@
 ### Project:  Ordinality
 ### Author:   Edoardo Costantini
 ### Created:  2021-06-10
-### Modified: 2021-06-14
+### Modified: 2021-06-15
 ### Note:     A "cell" is a cycle through the set of conditions.
 ###           The function in this script generates 1 data set, performs 
 ###           imputations for every condition in the set.
@@ -13,7 +13,7 @@ runCell <- function(cond, parms,
 # Example Internals -------------------------------------------------------
   
   # set.seed(1234)
-  # cond    = conds[3, ]
+  # cond    = conds[5, ]
   # rp = 1
 
 # Data Generation ---------------------------------------------------------
@@ -56,6 +56,29 @@ runCell <- function(cond, parms,
 
   # PCA results
   pcs_list <- lapply(dts, extract_pcs, npcs = 5)
+
+  # Append results from ad-hoc PCAmix
+  X.quanti <- NULL
+  X.quali <- as.data.frame(lapply(as.data.frame(dat_disc[, -1]),
+                                  factor))
+  PCAmix_out <- PCAmix(X.quanti, X.quali,
+                       ndim = 5,
+                       graph = FALSE,
+                       rename.level = TRUE)
+  # Fix names
+  PCAmix_dat <- PCAmix_out$scores
+  colnames(PCAmix_dat) <- paste0("PC", 1:ncol(PCAmix_dat))
+  PCAmix_out$eig
+
+  # Add y
+  PCAmix_dat <- cbind(z1 = dat_disc[, 1], PCAmix_dat)
+
+  # Append results
+  pcs_list <-   append(pcs_list,
+                       list(PCAmix = list(dat = PCAmix_dat,
+                                          r2 = PCAmix_out$eig[5, "Cumulative"]/100)
+                       )
+  )
 
   # Number of PCs extracted
   r2 <- sapply(pcs_list, "[[", "r2")

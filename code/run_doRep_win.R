@@ -2,7 +2,7 @@
 ### Project:  Ordinality
 ### Author:   Edoardo Costantini
 ### Created:  2021-06-10
-### Modified: 2021-06-10
+### Modified: 2021-06-15
 
 ## Make sure we have a clean environment:
 rm(list = ls(all = TRUE))
@@ -12,9 +12,6 @@ source("./init.R")
 
 ## Create a cluster object:
 clus <- makeCluster(5)
-
-## Two different ways to source a script on the worker nodes:
-clusterEvalQ(cl = clus, expr = source("./init.R"))
 
 ## Data directory for storage
 
@@ -28,6 +25,9 @@ cat(paste0("SIMULATION PROGRESS REPORT",
     file = paste0(parms$outDir, parms$file, ".txt"),
     sep = "\n",
     append = TRUE)
+
+## Two different ways to source a script on the worker nodes:
+clusterEvalQ(cl = clus, expr = source("./init.R"))
 
 # mcApply parallel --------------------------------------------------------
 
