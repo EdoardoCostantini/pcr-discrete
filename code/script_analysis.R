@@ -56,6 +56,7 @@
   head(gg_shape)
 
   ## Obtain plots
+<<<<<<< HEAD
   result <- c("mses.", "r2.", "cors.")[1]
   
   plot1 <- gg_shape %>%
@@ -85,3 +86,32 @@
          y     = NULL)
   
   plot1
+=======
+  result <- c("mses.", "r2.")[1]
+
+plot1 <- gg_shape %>%
+  filter(grepl(result, variable)) %>%
+  # Get rid of useless cond info
+  mutate(cond = fct_relabel(cond,
+                            str_replace,
+                            "^.*(?=(\\K))", "")
+  ) %>%
+  # Get better order
+  mutate(cond = fct_relevel(cond,
+                            "K10", "K7", "K5", "K3", "K2")
+  ) %>%
+  # Change labels of X axis
+  mutate(variable = fct_relabel(variable,
+                                str_replace,
+                                result, "")
+  ) %>%
+  # Main Plot
+  ggplot(aes(x = variable, y = value)) +
+  geom_boxplot() +
+  # Grid
+  facet_grid(cols = vars(cond),
+             scales = "free") +
+  # Format
+  labs(x     = NULL,
+       y     = NULL)
+>>>>>>> aec5a9bf08d0ed0747d2761363f2cffd16777e11
