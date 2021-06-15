@@ -31,9 +31,9 @@
   parms    <- list()
 
   # Generic
-  parms$outDir <- paste0("../output/", format(Sys.time(), "%Y%d%m_%H%M%S"), "/")
-    dir.create(parms$outDir)
-  parms$dt_rep <- 500
+  # parms$outDir <- paste0("../output/", format(Sys.time(), "%Y%d%m_%H%M%S"), "/")
+  #   dir.create(parms$outDir)
+  parms$dt_rep <- 100
 
   # Seed related
   parms$seed <- 2021

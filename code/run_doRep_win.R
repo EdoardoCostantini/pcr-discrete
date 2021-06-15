@@ -8,37 +8,38 @@
 rm(list = ls(all = TRUE))
 
 ## Initialize the environment:
+source("./settings.R")
 source("./init.R")
 
 ## Create a cluster object:
 clus <- makeCluster(5)
 
-## Data directory for storage
-
-# Progress report file ----------------------------------------------------
-file.create(paste0(parms$outDir, parms$file, ".txt"))
+## Progress report file
+file.create(paste0(settings$outDir, settings$fileName_progress, ".txt"))
 
 cat(paste0("SIMULATION PROGRESS REPORT",
            "\n",
            "Starts at: ", Sys.time(),
            "\n", "------", "\n" ),
-    file = paste0(parms$outDir, parms$file, ".txt"),
+    file = paste0(settings$outDir, settings$fileName_progress, ".txt"),
     sep = "\n",
     append = TRUE)
 
-## Two different ways to source a script on the worker nodes:
-clusterEvalQ(cl = clus, expr = source("./init.R"))
+## Export to worker nodes
+clusterExport(cl = clus, varlist = "settings", envir = .GlobalEnv) # export global env
+clusterEvalQ(cl = clus, expr = source("./init.R")) # execute script
 
 # mcApply parallel --------------------------------------------------------
 
 sim_start <- Sys.time()
 
 ## Run the computations in parallel on the 'clus' object:
-out <- parLapply(cl    = clus, 
+out <- parLapply(cl    = clus,
                  X     = 1 : parms$dt_rep,
-                 fun   = doRep, 
+                 fun   = doRep,
                  conds = conds,
-                 parms = parms)
+                 parms = parms,
+                 settings = settings)
 
 ## Kill the cluster:
 stopCluster(clus)
@@ -50,7 +51,7 @@ cat(paste0("\n", "------", "\n",
            "Run time: ",
            round(difftime(sim_ends, sim_start, units = "hours"), 3), " h",
            "\n", "------", "\n"),
-    file = paste0(parms$outDir, parms$file, ".txt"),
+    file = paste0(settings$outDir, settings$fileName_progress, ".txt"),
     sep = "\n",
     append = TRUE)
 
@@ -63,4 +64,4 @@ out_support$session_info <- devtools::session_info()
 # Save output -------------------------------------------------------------
 
 saveRDS(out_support,
-        paste0(parms$outDir, "sInfo.rds"))
+        paste0(settings$outDir, "sInfo.rds"))
