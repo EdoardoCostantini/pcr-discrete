@@ -10,7 +10,7 @@
 # Load Results ----------------------------------------------------------
 
   inDir <- "../output/"
-  runName <- "20211406_151337"
+  runName <- "20211506_155201"
   subDir <- paste0(inDir, runName, "/")
   sInfo <- readRDS(paste0(inDir, runName, "/sInfo.rds"))
 
