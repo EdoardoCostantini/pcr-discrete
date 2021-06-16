@@ -2,7 +2,7 @@
 ### Project:  Ordinality
 ### Author:   Edoardo Costantini
 ### Created:  2021-06-10
-### Modified: 2021-06-15
+### Modified: 2021-06-16
 ### Note:     A "cell" is a cycle through the set of conditions.
 ###           The function in this script generates 1 data set, performs 
 ###           imputations for every condition in the set.
@@ -15,7 +15,7 @@ runCell <- function(cond,
 # Example Internals -------------------------------------------------------
   
   # set.seed(1234)
-  # cond    = conds[5, ]
+  # cond    = conds[4, ]
   # rp = 1
 
 # Data Generation ---------------------------------------------------------
@@ -31,7 +31,7 @@ runCell <- function(cond,
 
   # dat_disc <- scale(cbind(z1 = dat_cont[,1], dat_disc)) # scale it
   # dat_disc <- cbind(z1 = dat_cont[,1], scale(dat_disc)) # scale it
-  dat_disc <- cbind(z1 = dat_cont[,1], dat_disc) # scale it
+  dat_disc <- cbind(z1 = dat_cont[, 1], dat_disc) # scale it
 
   # Generate Continuous Data w/ attenuated relationships
   Sigma <- cor(dat_disc)
@@ -47,6 +47,7 @@ runCell <- function(cond,
   dts <- list(cont = dat_cont,
               disc = dat_disc,
               atte = dat_disc_cont)
+  dts <- lapply(dts, scale)
 
 # Analysis ----------------------------------------------------------------
 
@@ -70,7 +71,7 @@ runCell <- function(cond,
     principal_r2 <- round(p$Vaccounted, 2)["Cumulative Var", 5]
 
   # Add y
-  PCAmix_dat <- cbind(z1 = dat_disc[, 1], principal_out$scores)
+  PCAmix_dat <- cbind(z1 = dat_cont[, 1], principal_out$scores)
 
   # Append results
   pcs_list <-   append(pcs_list,
