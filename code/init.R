@@ -12,7 +12,8 @@
                  "rlecuyer",
                  "parallel",
                  "MLmetrics",
-                 "PCAmixdata")
+                 "PCAmixdata",
+                 "psych")
 
   lapply(pack_list, library, character.only = TRUE, verbose = FALSE)
 

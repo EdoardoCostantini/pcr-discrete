@@ -60,25 +60,22 @@ runCell <- function(cond,
   pcs_list <- lapply(dts, extract_pcs, npcs = 5)
 
   # Append results from ad-hoc PCAmix
-  X.quanti <- NULL
-  X.quali <- as.data.frame(lapply(as.data.frame(dat_disc[, -1]),
-                                  factor))
-  PCAmix_out <- PCAmix(X.quanti, X.quali,
-                       ndim = 5,
-                       graph = FALSE,
-                       rename.level = TRUE)
-  # Fix names
-  PCAmix_dat <- PCAmix_out$scores
-  colnames(PCAmix_dat) <- paste0("PC", 1:ncol(PCAmix_dat))
-  PCAmix_out$eig
+  cor_type <- ifelse(length(unique(dat_disc[, 2])) >= 8,
+                     "cor",
+                     "poly")
+  principal_out <- principal(dat_disc[, -1], nfactors = 5,
+                             cor = cor_type,
+                             rotate = "none") #principal components
+  p <- print(principal_out)
+    principal_r2 <- round(p$Vaccounted, 2)["Cumulative Var", 5]
 
   # Add y
-  PCAmix_dat <- cbind(z1 = dat_disc[, 1], PCAmix_dat)
+  PCAmix_dat <- cbind(z1 = dat_disc[, 1], principal_out$scores)
 
   # Append results
   pcs_list <-   append(pcs_list,
                        list(PCAmix = list(dat = PCAmix_dat,
-                                          r2 = PCAmix_out$eig[5, "Cumulative"]/100)
+                                          r2 = principal_r2)
                        )
   )
 
