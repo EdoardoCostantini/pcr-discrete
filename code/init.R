@@ -2,7 +2,7 @@
 ### Project:  Ordinality
 ### Author:   Edoardo Costantini
 ### Created:  2021-06-10
-### Modified: 2021-06-10
+### Modified: 2021-06-16
 
 # Packages ----------------------------------------------------------------
 
@@ -35,7 +35,7 @@
   # Generic
   # parms$outDir <- paste0("../output/", format(Sys.time(), "%Y%d%m_%H%M%S"), "/")
   #   dir.create(parms$outDir)
-  parms$dt_rep <- 500
+  parms$dt_rep <- 1e3
 
   # Seed related
   parms$seed <- 2021
@@ -56,6 +56,9 @@
   parms$lv_cov_ax <- .8 # for auxiliary set
   parms$item_mean <- 0 # true item mean
   parms$item_var  <- 1 # true item variance
+
+  # Analysis
+  parms$npcs <- 1
   
   # Map variables
   parms$varMap <- list(ta = 1:2,  # TArget of analysis

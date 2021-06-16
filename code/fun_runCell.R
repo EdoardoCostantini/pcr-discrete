@@ -29,9 +29,7 @@ runCell <- function(cond,
     as.numeric(cut(j, breaks = cond$K))
   })
 
-  # dat_disc <- scale(cbind(z1 = dat_cont[,1], dat_disc)) # scale it
-  # dat_disc <- cbind(z1 = dat_cont[,1], scale(dat_disc)) # scale it
-  dat_disc <- cbind(z1 = dat_cont[, 1], dat_disc) # scale it
+  dat_disc <- cbind(z1 = dat_cont[,1], scale(dat_disc)) # scale it
 
   # Generate Continuous Data w/ attenuated relationships
   Sigma <- cor(dat_disc)
@@ -47,7 +45,6 @@ runCell <- function(cond,
   dts <- list(cont = dat_cont,
               disc = dat_disc,
               atte = dat_disc_cont)
-  dts <- lapply(dts, scale)
 
 # Analysis ----------------------------------------------------------------
 
@@ -58,17 +55,17 @@ runCell <- function(cond,
   coefs <- sapply(dts, extract_lm)
 
   # PCA results
-  pcs_list <- lapply(dts, extract_pcs, npcs = 5)
+  pcs_list <- lapply(dts, extract_pcs, npcs = parms$npcs)
 
   # Append results from ad-hoc PCAmix
   cor_type <- ifelse(length(unique(dat_disc[, 2])) >= 8,
                      "cor",
                      "poly")
-  principal_out <- principal(dat_disc[, -1], nfactors = 5,
+  principal_out <- principal(dat_disc[, -1], nfactors = parms$npcs,
                              cor = cor_type,
                              rotate = "none") #principal components
   p <- print(principal_out)
-    principal_r2 <- round(p$Vaccounted, 2)["Cumulative Var", 5]
+    principal_r2 <- round(p$Vaccounted, 2)["Cumulative Var", parms$npcs]
 
   # Add y
   PCAmix_dat <- cbind(z1 = dat_cont[, 1], principal_out$scores)
