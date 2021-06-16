@@ -57,26 +57,6 @@ runCell <- function(cond,
   # PCA results
   pcs_list <- lapply(dts, extract_pcs, npcs = parms$npcs)
 
-  # Append results from ad-hoc PCAmix
-  cor_type <- ifelse(length(unique(dat_disc[, 2])) >= 8,
-                     "cor",
-                     "poly")
-  principal_out <- principal(dat_disc[, -1], nfactors = parms$npcs,
-                             cor = cor_type,
-                             rotate = "none") #principal components
-  p <- print(principal_out)
-    principal_r2 <- round(p$Vaccounted, 2)["Cumulative Var", parms$npcs]
-
-  # Add y
-  PCAmix_dat <- cbind(z1 = dat_cont[, 1], principal_out$scores)
-
-  # Append results
-  pcs_list <-   append(pcs_list,
-                       list(PCAmix = list(dat = PCAmix_dat,
-                                          r2 = principal_r2)
-                       )
-  )
-
   # Number of PCs extracted
   r2 <- sapply(pcs_list, "[[", "r2")
 
