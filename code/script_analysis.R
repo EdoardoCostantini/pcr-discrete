@@ -10,7 +10,7 @@
 # Load Results ----------------------------------------------------------
 
   inDir <- "../output/"
-  runName <- "20211606_124954"
+  runName <- "20211606_142957"
 
   # Extract last element as session info object
   sim_out <- readRDS(paste0(inDir, runName, "_res.rds"))
@@ -43,9 +43,23 @@
   for (i in 1:nrow(sim_out$conds)){
     for(r in 1:sim_out$parms$dt_rep){
       content <- data.frame(cond = sim_out$conds$tag[i],
-                            mses = as.data.frame(t(sim_out$results[[i]][[r]]$mses)),
-                            r2 = as.data.frame(t(sim_out$results[[i]][[r]]$r2)),
-                            cors = as.data.frame(t(sim_out$results[[i]][[r]]$cors))
+                            mses = as.data.frame(
+                              t(
+                                sqrt(
+                                  sim_out$results[[i]][[r]]$mses
+                                )
+                              )
+                            ),
+                            r2 = as.data.frame(
+                              t(
+                                sim_out$results[[i]][[r]]$r2
+                              )
+                            ),
+                            cors = as.data.frame(
+                              t(
+                                sim_out$results[[i]][[r]]$cors
+                              )
+                            )
       )
       store <- rbind(store, content)
     }
@@ -56,7 +70,7 @@
   head(gg_shape)
 
   ## Obtain plots
-  result <- c("cors.", "mses.", "r2.")[1]
+  result <- c("cors.", "mses.", "r2.")[2]
   
   plot1 <- gg_shape %>%
     filter(grepl(result, variable)) %>%
@@ -84,5 +98,9 @@
     labs(title = result,
          x     = NULL,
          y     = NULL)
-  
+
+  png("~/Desktop/ggplot2.png")
   plot1
+  dev.off() 
+  
+  

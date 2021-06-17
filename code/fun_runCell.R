@@ -51,7 +51,7 @@ runCell <- function(cond,
   # Store Correlations
   cors <- sapply(dts, extract_avg_cor)
 
-  # Estiamtes and CI regression parameters
+  # Estimates and CI regression parameters
   coefs <- sapply(dts, extract_lm)
 
   # PCA results
