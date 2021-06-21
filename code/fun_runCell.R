@@ -15,7 +15,7 @@ runCell <- function(cond,
 # Example Internals -------------------------------------------------------
   
   # set.seed(1234)
-  # cond    = conds[4, ]
+  # cond    = conds[20, ]
   # rp = 1
 
 # Data Generation ---------------------------------------------------------
@@ -26,14 +26,17 @@ runCell <- function(cond,
     diag(Sigma) <- 1
   mu <- rep(parms$item_mean, parms$P)
   dat_cont <- MASS::mvrnorm(parms$N, mu, Sigma)
-  colnames(dat_cont) <- paste0("z", 1:ncol(dat_cont))
+    colnames(dat_cont) <- paste0("z", 1:ncol(dat_cont))
 
   # Discretise
-  dat_disc <- apply(dat_cont[,-1], 2, function(j){
-    as.numeric(cut(j, breaks = cond$K))
-  })
+  n_var_cate <- (parms$P-1) * cond$D # number of categorical variables
+  keep_continuous <- 1:(n_var_cate+1)
+  dat_disc <- apply(dat_cont[, -keep_continuous],
+                    2, function(j){
+      as.numeric(cut(j, breaks = cond$K))
+    })
 
-  dat_disc <- cbind(z1 = dat_cont[,1], scale(dat_disc)) # scale it
+  dat_disc <- cbind(dat_cont[, keep_continuous], dat_disc)
 
   # Generate Continuous Data w/ attenuated relationships
   Sigma_atte <- cor(dat_disc)
