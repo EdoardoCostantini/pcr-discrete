@@ -54,11 +54,13 @@
   # Parallel Experiments: for the continuous and attenuated relationship
   # Alternative experimental factor
   n_cate <- c(10, 7, 5, 3, 2)
+  p_cate <- seq(0, 1, by = .2)
 
   # Make Conditionsa
-  conds <- expand.grid(N  = parms$N,
-                       P  = parms$P,
-                       K = n_cate,
+  conds <- expand.grid(N  = parms$N, # sample size
+                       P  = parms$P, # number of total variables
+                       K = n_cate, # number of categories
+                       D = p_cate, # ordinality degree
                        stringsAsFactors = FALSE)
 
   # Print
@@ -66,6 +68,8 @@
 
   # Append Condition Tag
   conds$tag <- sapply(1:nrow(conds), function(i) {
-    paste0(colnames(conds), conds[i, ], collapse = "_")}
+    conds$D <- conds$D*100 # to improve tag name
+    paste0(colnames(conds), conds[i, ], collapse = "_")
+  }
   )
 

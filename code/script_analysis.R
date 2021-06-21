@@ -10,7 +10,7 @@
 # Load Results ----------------------------------------------------------
 
   inDir <- "../output/"
-  runName <- "20211606_142957"
+  runName <- "20212106_181942"
 
   # Extract last element as session info object
   sim_out <- readRDS(paste0(inDir, runName, "_res.rds"))
@@ -38,11 +38,15 @@
   library(stringr)
 
   ## Shape data for plot
-  sim_out$conds
-  store <- as.data.frame(vector("list", 9))
+  sim_out$conds$D
+  store <- as.data.frame(vector("list", 11))
   for (i in 1:nrow(sim_out$conds)){
+    # i <- 1
     for(r in 1:sim_out$parms$dt_rep){
-      content <- data.frame(cond = sim_out$conds$tag[i],
+      # r <- 1
+      content <- data.frame(condTag = sim_out$conds$tag[i],
+                            K = sim_out$conds$K[i],
+                            D = sim_out$conds$D[i],
                             mses = as.data.frame(
                               t(
                                 sqrt(
@@ -64,41 +68,38 @@
       store <- rbind(store, content)
     }
   }
-
+  
   gg_shape <- reshape2::melt(store,
-                             id.var = c("cond"))
+                             id.var = c("condTag", "K", "D"))
   head(gg_shape)
-
+  
   ## Obtain plots
   result <- c("cors.", "mses.", "r2.")[2]
-  
+  gg_shape$K
   plot1 <- gg_shape %>%
+    # Subset
     filter(grepl(result, variable)) %>%
+    filter(D %in% unique(gg_shape$D)) %>%
     # Get rid of useless cond info
-    mutate(cond = fct_relabel(cond,
-                              str_replace,
-                              "^.*(?=(\\K))", "")
-    ) %>%
-    # Get better order
-    mutate(cond = fct_relevel(cond,
-                              "K10", "K7", "K5", "K3", "K2")
+    mutate(condTag = fct_relabel(condTag, str_replace, "^.*(?=(\\K))", "")
     ) %>%
     # Change labels of X axis
-    mutate(variable = fct_relabel(variable,
-                                  str_replace,
-                                  result, "")
+    mutate(variable = fct_relabel(variable, str_replace, result, "")
     ) %>%
     # Main Plot
     ggplot(aes(x = variable, y = value)) +
     geom_boxplot() +
     # Grid
-    facet_grid(cols = vars(cond),
+    facet_grid(rows = vars((D)), 
+               cols = vars(factor(K, unique(gg_shape$K))),
                scales = "free") +
     # Format
     labs(title = result,
          x     = NULL,
          y     = NULL)
 
+  plot1
+  
   png("~/Desktop/ggplot2.png")
   plot1
   dev.off() 
