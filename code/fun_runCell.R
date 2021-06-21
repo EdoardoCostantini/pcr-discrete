@@ -2,7 +2,7 @@
 ### Project:  Ordinality
 ### Author:   Edoardo Costantini
 ### Created:  2021-06-10
-### Modified: 2021-06-16
+### Modified: 2021-06-21
 ### Note:     A "cell" is a cycle through the set of conditions.
 ###           The function in this script generates 1 data set, performs 
 ###           imputations for every condition in the set.
@@ -21,8 +21,12 @@ runCell <- function(cond,
 # Data Generation ---------------------------------------------------------
   
   # Generate Continuous Data
-  dat_list <- genData(parms = parms, cond = cond)
-  dat_cont <- dat_list$dat_ob
+  Sigma <- matrix(parms$item_cor,
+                  nrow = parms$P, ncol = parms$P)
+    diag(Sigma) <- 1
+  mu <- rep(parms$item_mean, parms$P)
+  dat_cont <- MASS::mvrnorm(parms$N, mu, Sigma)
+  colnames(dat_cont) <- paste0("z", 1:ncol(dat_cont))
 
   # Discretise
   dat_disc <- apply(dat_cont[,-1], 2, function(j){
@@ -32,9 +36,9 @@ runCell <- function(cond,
   dat_disc <- cbind(z1 = dat_cont[,1], scale(dat_disc)) # scale it
 
   # Generate Continuous Data w/ attenuated relationships
-  Sigma <- cor(dat_disc)
-  mu <- colMeans(dat_disc)
-  dat_disc_cont <- MASS::mvrnorm(parms$N, mu, Sigma)
+  Sigma_atte <- cor(dat_disc)
+  mu_atte <- colMeans(dat_disc)
+  dat_atte <- MASS::mvrnorm(parms$N, mu_atte, Sigma_atte)
 
   # Define Training and Testing data
   ind   <- sample(1 : nrow(dat_cont))
@@ -44,7 +48,7 @@ runCell <- function(cond,
   # Store datasets in a list
   dts <- list(cont = dat_cont,
               disc = dat_disc,
-              atte = dat_disc_cont)
+              atte = dat_atte)
 
 # Analysis ----------------------------------------------------------------
 

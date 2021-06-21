@@ -2,7 +2,7 @@
 ### Project:  Ordinality
 ### Author:   Edoardo Costantini
 ### Created:  2021-06-10
-### Modified: 2021-06-16
+### Modified: 2021-06-21
 
 # Packages ----------------------------------------------------------------
 
@@ -24,7 +24,6 @@
   source("./fun_doRep.R")
 
   # Support Functions
-  source("./helper/fun_dataGen.R")
   source("./helper/functions.R")
 
 # Fixed Parameters --------------------------------------------------------
@@ -33,8 +32,6 @@
   parms    <- list()
 
   # Generic
-  # parms$outDir <- paste0("../output/", format(Sys.time(), "%Y%d%m_%H%M%S"), "/")
-  #   dir.create(parms$outDir)
   parms$dt_rep <- 1e3
 
   # Seed related
@@ -43,28 +40,14 @@
 
   # Data generation
   parms$N <- 1e3 # sample size
-  parms$L <- 8 # number of latent variables
-  parms$J <- 3 # number of measured items for latent variable
   parms$K <- 5 # number of categories for ordinal variables
-  parms$P <- parms$L*parms$J # number of latent variables
-  parms$pm <- .2 # proportion of missings level
-  parms$fl <- .8 # factor loadings level
-  parms$lv_mean   <- 0 # true latent mean
-  parms$lv_var    <- 1 # true latent variance
-  parms$lv_cov_ta <- .8 # true latent cov for target variables
-  parms$lv_cov_mp <- .8 # for mar predictors
-  parms$lv_cov_ax <- .8 # for auxiliary set
+  parms$P <- 50 # number of variables
   parms$item_mean <- 0 # true item mean
   parms$item_var  <- 1 # true item variance
+  parms$item_cor  <- .8 # true item variance
 
   # Analysis
   parms$npcs <- 1
-  
-  # Map variables
-  parms$varMap <- list(ta = 1:2,  # TArget of analysis
-                       mp = 3:5, # Mar Predictors
-                       ax = 6:parms$L # Auxiliary variables
-  )
 
 # Experimental Conditions -------------------------------------------------
 
@@ -74,10 +57,7 @@
 
   # Make Conditionsa
   conds <- expand.grid(N  = parms$N,
-                       L  = parms$L,
-                       J  = parms$J,
-                       P  = parms$L * parms$J,
-                       fl = parms$fl,
+                       P  = parms$P,
                        K = n_cate,
                        stringsAsFactors = FALSE)
 

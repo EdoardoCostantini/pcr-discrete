@@ -2,7 +2,7 @@
 ### Project:  Ordinality
 ### Author:   Edoardo Costantini
 ### Created:  2021-06-10
-### Modified: 2021-06-10
+### Modified: 2021-06-21
 
   ## Make sure we have a clean environment:
   rm(list = ls(all = TRUE))
@@ -10,7 +10,7 @@
 # Load Results ----------------------------------------------------------
 
   inDir <- "../output/"
-  runName <- "20211606_142957"
+  runName <- "20212106_143203"
   subDir <- paste0(inDir, runName, "/")
   sInfo <- readRDS(paste0(inDir, runName, "/sInfo.rds"))
 
