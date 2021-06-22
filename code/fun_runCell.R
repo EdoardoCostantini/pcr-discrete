@@ -64,6 +64,37 @@ runCell <- function(cond,
   # PCA results
   pcs_list <- lapply(dts, extract_pcs, npcs = parms$npcs)
 
+  # PCAmix results
+  dat_disc_quanti <- dat_disc[, keep_continuous[-1]]
+  dat_disc_quali <- as.data.frame(dat_disc[, -keep_continuous])
+    dat_disc_quali <- as.data.frame(lapply(dat_disc_quali, factor))
+  if(ncol(dat_disc_quali) == 0){
+    pcamix <- PCAmix(X.quanti = dat_disc_quanti,
+                     rename.level = TRUE,
+                     ndim = ncol(dat_disc), graph = FALSE)
+  }
+  if(ncol(dat_disc_quanti) == 0){
+    pcamix <- PCAmix(X.quali = dat_disc_quali,
+                     rename.level = TRUE,
+                     ndim = ncol(dat_disc), graph = FALSE)
+  }
+  if(ncol(dat_disc_quali) != 0 & ncol(dat_disc_quanti) != 0){
+    pcamix <- PCAmix(X.quanti = dat_disc_quanti,
+                     X.quali = dat_disc_quali,
+                     rename.level = TRUE,
+                     ndim = ncol(dat_disc), graph = FALSE)
+  }
+  pcamix_dat <- cbind(z1 = dat_disc[, 1],
+                      PC = pcamix$ind$coord[, 1:parms$npcs, drop = FALSE])
+  pcamix_r2 <- pcamix$eig[1:parms$npcs, "Cumulative"]/100
+
+  # Append results
+  pcs_list <-   append(pcs_list,
+                       list(PCAmix = list(dat = pcamix_dat,
+                                          r2 = pcamix_r2)
+                       )
+  )
+
   # Number of PCs extracted
   r2 <- sapply(pcs_list, "[[", "r2")
 

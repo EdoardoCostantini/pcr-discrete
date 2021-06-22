@@ -5,7 +5,7 @@
 ### Modified: 2021-06-22
 
   ## Make sure we have a clean environment:
-  rm(list = ls(all = TRUE))
+  rm(list = ls())
 
   ## Support Functions
   source("./helper/functions.R")
@@ -55,8 +55,11 @@
   # Shape results for ggplot
   store <- as.data.frame(vector("list", 11))
   for (i in 1:nrow(out$conds)){
+    cond_length <- length(out$results[[i]])
+    print(out$conds[i, ])
+    print(paste0("Condition legnth: ", cond_length))
     # i <- 1
-    for(r in 1:out$parms$dt_rep){
+    for(r in 1:cond_length){
       # r <- 1
       content <- data.frame(condTag = out$conds$tag[i],
                             K = out$conds$K[i],
