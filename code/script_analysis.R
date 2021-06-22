@@ -10,7 +10,7 @@
 # Load Results ----------------------------------------------------------
 
   inDir <- "../output/"
-  runName <- "20212106_181942"
+  runName <- "20212206_143636"
 
   # Extract last element as session info object
   sim_out <- readRDS(paste0(inDir, runName, "_res.rds"))

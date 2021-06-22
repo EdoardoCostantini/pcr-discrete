@@ -2,7 +2,7 @@
 ### Project:  Ordinality
 ### Author:   Edoardo Costantini
 ### Created:  2021-06-10
-### Modified: 2021-06-21
+### Modified: 2021-06-22
 
 # Packages ----------------------------------------------------------------
 
@@ -13,7 +13,8 @@
                  "parallel",
                  "MLmetrics",
                  "PCAmixdata",
-                 "psych")
+                 "psych",
+                 "stringr")
 
   lapply(pack_list, library, character.only = TRUE, verbose = FALSE)
 
