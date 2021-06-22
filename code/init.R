@@ -33,7 +33,7 @@
   parms    <- list()
 
   # Generic
-  parms$dt_rep <- 20
+  parms$dt_rep <- 1e3
 
   # Seed related
   parms$seed <- 2021
@@ -41,7 +41,6 @@
 
   # Data generation
   parms$N <- 1e3 # sample size
-  parms$K <- 5 # number of categories for ordinal variables
   parms$P <- 50 # number of variables
   parms$item_mean <- 0 # true item mean
   parms$item_var  <- 1 # true item variance
