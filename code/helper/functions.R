@@ -2,7 +2,7 @@
 ### Project:  Imputing High Dimensional Data
 ### Author:   Edoardo Costantini
 ### Created:  2020-05-19
-### Modified: 2021-06-14
+### Modified: 2021-06-22
 
 # Average correlation -----------------------------------------------------
 
@@ -99,4 +99,25 @@ average_result <- function(cond,
   })
   out <- Reduce('+', collection)/length(collection)
   return(round(out, d_place))
+}
+
+# Write tar.gz ------------------------------------------------------------
+
+write.tar.gz <- function(folder_name){
+  # Description:
+  # Given the name of a folder name in the "output" project folder
+  # it zips it and deletes the original folder
+
+  # Move to Output folder
+  setwd("../output/")
+
+  # Zip folder
+  system(command = paste0("tar cvzf ", folder_name, ".tar.gz",
+                          " ./", folder_name, "/"))
+
+  # Delete Folder
+  system(command = paste0("rm -rf ", folder_name))
+
+  # Revert WD to code folder
+  setwd("../code/")
 }

@@ -12,10 +12,10 @@
 *-Ex.R
 
 # Output files from R CMD build
-/*.tar.gz
+*.tar.gz
 
 # Output files from R CMD check
-/*.Rcheck/
+*.Rcheck/
 
 # RStudio files
 .Rproj.user/

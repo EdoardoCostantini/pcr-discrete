@@ -2,7 +2,7 @@
 ### Project:  Ordinality
 ### Author:   Edoardo Costantini
 ### Created:  2021-06-10
-### Modified: 2021-06-15
+### Modified: 2021-06-22
 
 ## Make sure we have a clean environment:
 rm(list = ls(all = TRUE))
@@ -65,3 +65,7 @@ out_support$session_info <- devtools::session_info()
 
 saveRDS(out_support,
         paste0(settings$outDir, "sInfo.rds"))
+
+# Zip output folder -------------------------------------------------------
+
+write.tar.gz(settings$fileName)
