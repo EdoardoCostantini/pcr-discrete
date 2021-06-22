@@ -72,6 +72,9 @@ extract_mse <- function(dt = matrix(),
   ## Transform into data frame
   dt_df <- as.data.frame(dt)
 
+  ## Check column names have no spaces
+  colnames(dt_df) <- sapply(colnames(dt_df), str_replace, " ", "")
+
   ## Estimate model
   vars <- colnames(dt_df)
   lm_out <- lm(formula = paste0(vars[1],

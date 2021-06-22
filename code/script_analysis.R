@@ -19,7 +19,7 @@
 # Load Results ----------------------------------------------------------
 
   inDir <- "../output/"
-  runName <- "20212206_151918"
+  runName <- "20212206_175047"
 
   # Read output
   sim_out <- readRDS(paste0(inDir, runName, "_res.rds"))
@@ -58,10 +58,11 @@
     ggplot(aes(x = variable, y = value)) +
     geom_boxplot() +
     # Grid
-    facet_grid(rows = vars((D)), 
+    facet_grid(rows = vars((D)),
                cols = vars(factor(K, unique(gg_shape$K))),
                scales = "free") +
     # Format
+    ylim(0.35, .7) + # should use only when plotting mses!
     labs(title = result,
          x     = NULL,
          y     = NULL)
