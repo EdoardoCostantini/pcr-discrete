@@ -10,7 +10,7 @@
 # Load Results ----------------------------------------------------------
 
   inDir <- "../output/"
-  runName <- "20212206_143636"
+  runName <- "20212206_151918"
 
   # Extract last element as session info object
   sim_out <- readRDS(paste0(inDir, runName, "_res.rds"))
@@ -80,6 +80,7 @@
     # Subset
     filter(grepl(result, variable)) %>%
     filter(D %in% unique(gg_shape$D)) %>%
+    filter(K %in% unique(gg_shape$K)[c(-2)]) %>%
     # Get rid of useless cond info
     mutate(condTag = fct_relabel(condTag, str_replace, "^.*(?=(\\K))", "")
     ) %>%
