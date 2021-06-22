@@ -7,13 +7,23 @@
   ## Make sure we have a clean environment:
   rm(list = ls())
 
+# Packages ----------------------------------------------------------------
+
+  pack_list <- c("ggplot2",
+                 "dplyr",
+                 "forcats",
+                 "stringr")
+
+  lapply(pack_list, library, character.only = TRUE, verbose = FALSE)
+
 # Load Results ----------------------------------------------------------
 
   inDir <- "../output/"
   runName <- "20212206_151918"
 
-  # Extract last element as session info object
+  # Read output
   sim_out <- readRDS(paste0(inDir, runName, "_res.rds"))
+  gg_shape <- sim_out$gg_shape
 
   # Support Functions
   source("./helper/functions.R")
@@ -21,7 +31,7 @@
 # Analyse -----------------------------------------------------------------
 
   # Possible Results
-  names(sim_out$results$N1000_L8_J3_P24_fl0.8_K2$rep1)
+  names(sim_out$results[[1]]$rep1)
 
   # Mean result by name
   lapply(sim_out$results, average_result, result = "coefs")
@@ -30,51 +40,9 @@
   t(sapply(sim_out$results, average_result, result = "mses"))
 
 # Plots -------------------------------------------------------------------
-  
-  ## Packages for plots 
-  library(ggplot2)
-  library(dplyr)
-  library(forcats)
-  library(stringr)
 
-  ## Shape data for plot
-  sim_out$conds$D
-  store <- as.data.frame(vector("list", 11))
-  for (i in 1:nrow(sim_out$conds)){
-    # i <- 1
-    for(r in 1:sim_out$parms$dt_rep){
-      # r <- 1
-      content <- data.frame(condTag = sim_out$conds$tag[i],
-                            K = sim_out$conds$K[i],
-                            D = sim_out$conds$D[i],
-                            mses = as.data.frame(
-                              t(
-                                sqrt(
-                                  sim_out$results[[i]][[r]]$mses
-                                )
-                              )
-                            ),
-                            r2 = as.data.frame(
-                              t(
-                                sim_out$results[[i]][[r]]$r2
-                              )
-                            ),
-                            cors = as.data.frame(
-                              t(
-                                sim_out$results[[i]][[r]]$cors
-                              )
-                            )
-      )
-      store <- rbind(store, content)
-    }
-  }
-  
-  gg_shape <- reshape2::melt(store,
-                             id.var = c("condTag", "K", "D"))
-  
   ## Obtain plots
   result <- c("cors.", "mses.", "r2.")[2]
-
   plot1 <- gg_shape %>%
     # Subset
     filter(grepl(result, variable)) %>%
@@ -98,7 +66,7 @@
          x     = NULL,
          y     = NULL)
 
-  # plot1
+  plot1
   
   png("~/Desktop/ggplot2.png")
   plot1

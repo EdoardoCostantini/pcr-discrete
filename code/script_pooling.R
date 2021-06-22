@@ -52,6 +52,41 @@
   out$conds <- output$sInfo$conds
   out$session_info <- output$sInfo$session_info
 
+  # Shape results for ggplot
+  store <- as.data.frame(vector("list", 11))
+  for (i in 1:nrow(out$conds)){
+    # i <- 1
+    for(r in 1:out$parms$dt_rep){
+      # r <- 1
+      content <- data.frame(condTag = out$conds$tag[i],
+                            K = out$conds$K[i],
+                            D = out$conds$D[i],
+                            mses = as.data.frame(
+                              t(
+                                sqrt(
+                                  out$results[[i]][[r]]$mses
+                                )
+                              )
+                            ),
+                            r2 = as.data.frame(
+                              t(
+                                out$results[[i]][[r]]$r2
+                              )
+                            ),
+                            cors = as.data.frame(
+                              t(
+                                out$results[[i]][[r]]$cors
+                              )
+                            )
+      )
+      store <- rbind(store, content)
+    }
+  }
+
+  # Melt for ggplot
+  gg_shape <- reshape2::melt(store, id.var = c("condTag", "K", "D"))
+  out$gg_shape <- gg_shape
+
   # Save
   saveRDS(out,
           file = paste0("../output/",
@@ -59,5 +94,3 @@
                         "_res",
                         ".rds")
   )
-
-
