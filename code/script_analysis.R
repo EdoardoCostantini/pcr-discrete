@@ -71,16 +71,15 @@
   
   gg_shape <- reshape2::melt(store,
                              id.var = c("condTag", "K", "D"))
-  head(gg_shape)
   
   ## Obtain plots
   result <- c("cors.", "mses.", "r2.")[2]
-  gg_shape$K
+
   plot1 <- gg_shape %>%
     # Subset
     filter(grepl(result, variable)) %>%
-    filter(D %in% unique(gg_shape$D)) %>%
-    filter(K %in% unique(gg_shape$K)[c(-2)]) %>%
+    filter(D %in% unique(gg_shape$D)[c(-2)]) %>%
+    filter(K %in% unique(gg_shape$K)) %>%
     # Get rid of useless cond info
     mutate(condTag = fct_relabel(condTag, str_replace, "^.*(?=(\\K))", "")
     ) %>%
@@ -99,7 +98,7 @@
          x     = NULL,
          y     = NULL)
 
-  plot1
+  # plot1
   
   png("~/Desktop/ggplot2.png")
   plot1
