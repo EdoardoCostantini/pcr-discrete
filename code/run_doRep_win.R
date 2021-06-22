@@ -5,7 +5,7 @@
 ### Modified: 2021-06-22
 
 ## Make sure we have a clean environment:
-rm(list = ls(all = TRUE))
+rm(list = ls())
 
 ## Initialize the environment:
 source("./settings.R")
