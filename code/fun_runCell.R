@@ -40,7 +40,7 @@ runCell <- function(cond,
 
   # Disjunction table
   dat_fact <- as.data.frame(lapply(as.data.frame(dat_disc[, -keep_continuous]),
-                                   factor))
+                                   factor, ordered = TRUE))
   if(ncol(dat_fact) != 0){
     dat_disj <- cbind(dat_disc[, keep_continuous, drop = FALSE],
                       tab.disjonctif(dat_fact))
