@@ -93,7 +93,12 @@ runCell <- function(cond,
   }
   pcamix_dat <- cbind(z1 = dat_disc[, 1],
                       PC = pcamix$ind$coord[, 1:parms$npcs, drop = FALSE])
-  pcamix_r2 <- pcamix$eig[1:parms$npcs, "Cumulative"]/100
+  # pcamix_r2 <- pcamix$eig[1:parms$npcs, "Cumulative"]/100
+  var_exp <- apply(pcamix$ind$coord, 2, var) # same
+  var_tot <- sum(var_exp)
+  pcamix_r2 <- unname( # cumulative variance explained
+    round(cumsum(var_exp)/var_tot, 3)[1:parms$npcs]
+  )
 
   # Append results
   pcs_list <-   append(pcs_list,
