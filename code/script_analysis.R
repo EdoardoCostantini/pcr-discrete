@@ -19,7 +19,7 @@
 # Load Results ----------------------------------------------------------
 
   inDir <- "../output/"
-  runName <- "20212206_175047"
+  runName <- "20212306_112142"
 
   # Read output
   sim_out <- readRDS(paste0(inDir, runName, "_res.rds"))
@@ -46,8 +46,9 @@
   plot1 <- gg_shape %>%
     # Subset
     filter(grepl(result, variable)) %>%
-    filter(D %in% unique(gg_shape$D)[c(-2)]) %>%
+    filter(D %in% unique(gg_shape$D)) %>%
     filter(K %in% unique(gg_shape$K)) %>%
+    filter(value < 1) %>% # to get rid of some outliers
     # Get rid of useless cond info
     mutate(condTag = fct_relabel(condTag, str_replace, "^.*(?=(\\K))", "")
     ) %>%
@@ -62,7 +63,6 @@
                cols = vars(factor(K, unique(gg_shape$K))),
                scales = "free") +
     # Format
-    ylim(0.35, .7) + # should use only when plotting mses!
     labs(title = result,
          x     = NULL,
          y     = NULL)
