@@ -2,7 +2,7 @@
 ### Project:  Ordinality
 ### Author:   Edoardo Costantini
 ### Created:  2021-06-10
-### Modified: 2021-06-21
+### Modified: 2021-06-22
 ### Note:     A "cell" is a cycle through the set of conditions.
 ###           The function in this script generates 1 data set, performs 
 ###           imputations for every condition in the set.
@@ -15,7 +15,7 @@ runCell <- function(cond,
 # Example Internals -------------------------------------------------------
   
   # set.seed(1234)
-  # cond    = conds[1, ]
+  # cond    = conds[28, ]
   # rp = 1
 
 # Data Generation ---------------------------------------------------------
@@ -36,13 +36,18 @@ runCell <- function(cond,
       as.numeric(cut(j, breaks = cond$K))
     })
 
-  dat_disc <- cbind(dat_cont[, keep_continuous], dat_disc)
+  dat_disc <- cbind(dat_cont[, keep_continuous, drop = FALSE], dat_disc)
 
   # Disjunction table
   dat_fact <- as.data.frame(lapply(as.data.frame(dat_disc[, -keep_continuous]),
                                    factor))
-
-  dat_disj <- cbind(dat_disc[, keep_continuous], tab.disjonctif(dat_fact))
+  if(ncol(dat_fact) != 0){
+    dat_disj <- cbind(dat_disc[, keep_continuous, drop = FALSE],
+                      tab.disjonctif(dat_fact))
+  }
+  if(ncol(dat_fact) == 0){
+    dat_disj <- dat_disc
+  }
 
   # Generate Continuous Data w/ attenuated relationships
   Sigma_atte <- cor(dat_disc)
