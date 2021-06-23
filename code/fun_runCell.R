@@ -15,7 +15,7 @@ runCell <- function(cond,
 # Example Internals -------------------------------------------------------
   
   # set.seed(1234)
-  # cond    = conds[28, ]
+  # cond    = conds[1, ]
   # rp = 1
 
 # Data Generation ---------------------------------------------------------
