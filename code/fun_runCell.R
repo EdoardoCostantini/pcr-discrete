@@ -38,6 +38,12 @@ runCell <- function(cond,
 
   dat_disc <- cbind(dat_cont[, keep_continuous], dat_disc)
 
+  # Disjunction table
+  dat_fact <- as.data.frame(lapply(as.data.frame(dat_disc[, -keep_continuous]),
+                                   factor))
+
+  dat_disj <- cbind(dat_disc[, keep_continuous], tab.disjonctif(dat_fact))
+
   # Generate Continuous Data w/ attenuated relationships
   Sigma_atte <- cor(dat_disc)
   mu_atte <- colMeans(dat_disc)
@@ -51,6 +57,7 @@ runCell <- function(cond,
   # Store datasets in a list
   dts <- list(cont = dat_cont,
               disc = dat_disc,
+              disj = dat_disj,
               atte = dat_atte)
 
 # Analysis ----------------------------------------------------------------

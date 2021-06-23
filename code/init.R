@@ -14,7 +14,8 @@
                  "MLmetrics",
                  "PCAmixdata",
                  "psych",
-                 "stringr")
+                 "stringr",
+                 "FactoMineR")
 
   lapply(pack_list, library, character.only = TRUE, verbose = FALSE)
 
