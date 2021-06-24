@@ -45,9 +45,14 @@
   result <- c("cors.", "mses.", "r2.")[2]
   D_conditions <- unique(gg_shape$D)
   K_conditions <- unique(gg_shape$K)
+  methods <- paste(
+    c("cont", "disc", "disj", "atte", "PCAmix"),
+    collapse = "|"
+  )
   plot1 <- gg_shape %>%
     # Subset
     filter(grepl(result, variable)) %>%
+    filter(grepl(methods, variable)) %>%
     filter(D %in% D_conditions) %>%
     filter(K %in% K_conditions) %>%
     filter(value < 1) %>% # to get rid of some outliers
