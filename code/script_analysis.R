@@ -49,9 +49,6 @@
     filter(D %in% unique(gg_shape$D)) %>%
     filter(K %in% unique(gg_shape$K)) %>%
     filter(value < 1) %>% # to get rid of some outliers
-    # Get rid of useless cond info
-    mutate(condTag = fct_relabel(condTag, str_replace, "^.*(?=(\\K))", "")
-    ) %>%
     # Change labels of X axis
     mutate(variable = fct_relabel(variable, str_replace, result, "")
     ) %>%
@@ -59,10 +56,17 @@
     ggplot(aes(x = variable, y = value)) +
     geom_boxplot() +
     # Grid
-    facet_grid(rows = vars((D)),
-               cols = vars(factor(K, unique(gg_shape$K))),
+    facet_grid(rows = vars(factor(D,
+                                  labels = paste0("D = ", unique(gg_shape$D)))),
+               cols = vars(factor(K,
+                                  levels = unique(gg_shape$K),
+                                  labels = paste0("K = ", unique(gg_shape$K)))),
                scales = "free") +
     # Format
+    theme(text = element_text(size = 12.5),
+          plot.title = element_text(hjust = 0.5),
+          axis.text = element_text(size = 12.5),
+          axis.title = element_text(size = 12.5)) +
     labs(title = result,
          x     = NULL,
          y     = NULL)
