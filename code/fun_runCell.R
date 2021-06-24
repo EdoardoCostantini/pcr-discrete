@@ -15,7 +15,7 @@ runCell <- function(cond,
 # Example Internals -------------------------------------------------------
   
   # set.seed(1234)
-  # cond    = conds[1, ]
+  # cond    = conds[4, ]
   # rp = 1
 
 # Data Generation ---------------------------------------------------------
@@ -41,24 +41,13 @@ runCell <- function(cond,
   # Disjunction table
   dat_fact <- as.data.frame(lapply(as.data.frame(dat_disc[, -keep_continuous]),
                                    factor, ordered = FALSE))
-  if(ncol(dat_fact) != 0){
-    dat_disj <- cbind(dat_disc[, keep_continuous, drop = FALSE],
-                      tab.disjonctif(dat_fact))
-  }
-  if(ncol(dat_fact) == 0){
-    dat_disj <- dat_disc
-  }
+  dat_disj <- cbind(dat_disc[, keep_continuous, drop = FALSE],
+                    tab.disjonctif(dat_fact))
 
   # Dummy Coded version
-  if(ncol(dat_fact) != 0){
-    head(dat_dumm)
-    dat_dumm <- model.matrix(~ -1 + .,
-                             cbind(z1 = dat_cont[, 1, drop = FALSE],
-                                   dat_fact))
-  }
-  if(ncol(dat_fact) == 0){
-    dat_dumm <- dat_disc
-  }
+  dat_dumm <- model.matrix(~ .,
+                           cbind(dat_cont[, keep_continuous, drop = FALSE],
+                                 dat_fact))[, -1]
 
   # Generate Continuous Data w/ attenuated relationships
   Sigma_atte <- cor(dat_disc)
@@ -92,17 +81,12 @@ runCell <- function(cond,
   dat_disc_quanti <- dat_disc[, keep_continuous[-1]]
   dat_disc_quali <- as.data.frame(dat_disc[, -keep_continuous])
     dat_disc_quali <- as.data.frame(lapply(dat_disc_quali, factor))
-  if(ncol(dat_disc_quali) == 0){
-    pcamix <- PCAmix(X.quanti = dat_disc_quanti,
-                     rename.level = TRUE,
-                     ndim = ncol(dat_disc), graph = FALSE)
-  }
   if(ncol(dat_disc_quanti) == 0){
     pcamix <- PCAmix(X.quali = dat_disc_quali,
                      rename.level = TRUE,
                      ndim = ncol(dat_disc), graph = FALSE)
   }
-  if(ncol(dat_disc_quali) != 0 & ncol(dat_disc_quanti) != 0){
+  if(ncol(dat_disc_quanti) != 0){
     pcamix <- PCAmix(X.quanti = dat_disc_quanti,
                      X.quali = dat_disc_quali,
                      rename.level = TRUE,

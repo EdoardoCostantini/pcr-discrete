@@ -2,7 +2,7 @@
 ### Project:  Ordinality
 ### Author:   Edoardo Costantini
 ### Created:  2021-06-10
-### Modified: 2021-06-23
+### Modified: 2021-06-24
 
 # Packages ----------------------------------------------------------------
 
@@ -55,7 +55,7 @@
   # Parallel Experiments: for the continuous and attenuated relationship
   # Alternative experimental factor
   n_cate <- c(10, 7, 5, 3, 2)
-  p_cate <- round(seq(0, 1, length.out = 4), 2)
+  p_cate <- round(seq(.25, 1, length.out = 4), 2)
 
   # Make Conditionsa
   conds <- expand.grid(N  = parms$N, # sample size
