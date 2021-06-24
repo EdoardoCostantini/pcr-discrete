@@ -43,11 +43,13 @@
 
   ## Obtain plots
   result <- c("cors.", "mses.", "r2.")[2]
+  D_conditions <- unique(gg_shape$D)
+  K_conditions <- unique(gg_shape$K)
   plot1 <- gg_shape %>%
     # Subset
     filter(grepl(result, variable)) %>%
-    filter(D %in% unique(gg_shape$D)) %>%
-    filter(K %in% unique(gg_shape$K)) %>%
+    filter(D %in% D_conditions) %>%
+    filter(K %in% K_conditions) %>%
     filter(value < 1) %>% # to get rid of some outliers
     # Change labels of X axis
     mutate(variable = fct_relabel(variable, str_replace, result, "")
@@ -57,10 +59,10 @@
     geom_boxplot() +
     # Grid
     facet_grid(rows = vars(factor(D,
-                                  labels = paste0("D = ", unique(gg_shape$D)))),
+                                  labels = paste0("D = ", D_conditions))),
                cols = vars(factor(K,
-                                  levels = unique(gg_shape$K),
-                                  labels = paste0("K = ", unique(gg_shape$K)))),
+                                  levels = K_conditions,
+                                  labels = paste0("K = ", K_conditions))),
                scales = "free") +
     # Format
     theme(text = element_text(size = 12.5),
@@ -72,9 +74,13 @@
          y     = NULL)
 
   plot1
-  
-  png("~/Desktop/ggplot2.png")
+
+# Save plots --------------------------------------------------------------
+
+  file_format <- ".pdf"
+  plot_name <- "plot1_Dfactor"
+  out_dir <- "~/Desktop/"
+  file_name <- paste0(out_dir, plot_name, file_format)
+  pdf(file_name, width = 15, height = 15)
   plot1
-  dev.off() 
-  
-  
+  dev.off()
