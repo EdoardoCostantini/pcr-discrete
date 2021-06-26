@@ -19,7 +19,7 @@
 # Load Results ----------------------------------------------------------
 
   inDir <- "../output/"
-  runName <- "20212606_095054"
+  runName <- "20212606_100646"
 
   # Read output
   sim_out <- readRDS(paste0(inDir, runName, "_res.rds"))
