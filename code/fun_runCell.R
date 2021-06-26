@@ -35,7 +35,7 @@ runCell <- function(cond,
                     2,
                     dis_data,
                     K = cond$K,
-                    interval = TRUE)
+                    interval = cond$interval)
   dat_disc <- cbind(dat_cont[, keep_continuous, drop = FALSE], dat_disc)
 
   # Disjunction table

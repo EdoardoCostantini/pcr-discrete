@@ -53,7 +53,7 @@
   out$session_info <- output$sInfo$session_info
 
   # Shape results for ggplot
-  store <- as.data.frame(vector("list", 11))
+  store <- as.data.frame(vector("list", 12))
   for (i in 1:nrow(out$conds)){
     cond_length <- length(out$results[[i]])
     print(out$conds[i, ])
@@ -64,6 +64,7 @@
       content <- data.frame(condTag = out$conds$tag[i],
                             K = out$conds$K[i],
                             D = out$conds$D[i],
+                            interval = out$conds$interval[i],
                             mses = as.data.frame(
                               t(
                                 sqrt(
@@ -87,7 +88,7 @@
   }
 
   # Melt for ggplot
-  gg_shape <- reshape2::melt(store, id.var = c("condTag", "K", "D"))
+  gg_shape <- reshape2::melt(store, id.var = c("condTag", "K", "D", "interval"))
   out$gg_shape <- gg_shape
 
   # Save

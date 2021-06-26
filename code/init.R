@@ -34,7 +34,7 @@
   parms    <- list()
 
   # Generic
-  parms$dt_rep <- 1e3
+  parms$dt_rep <- 20
 
   # Seed related
   parms$seed <- 2021
@@ -56,12 +56,14 @@
   # Alternative experimental factor
   n_cate <- c(10, 7, 5, 3, 2)
   p_cate <- round(seq(.25, 1, length.out = 4), 2)
+  interval <- c(TRUE, FALSE)
 
   # Make Conditionsa
   conds <- expand.grid(N  = parms$N, # sample size
                        P  = parms$P, # number of total variables
                        K = n_cate, # number of categories
                        D = p_cate, # ordinality degree
+                       interval = interval,
                        stringsAsFactors = FALSE)
 
   # Print

@@ -19,7 +19,7 @@
 # Load Results ----------------------------------------------------------
 
   inDir <- "../output/"
-  runName <- "20212306_112142"
+  runName <- "20212606_095054"
 
   # Read output
   sim_out <- readRDS(paste0(inDir, runName, "_res.rds"))
@@ -43,8 +43,11 @@
 
   ## Obtain plots
   result <- c("cors.", "mses.", "r2.")[2]
-  D_conditions <- unique(gg_shape$D)
+
   K_conditions <- unique(gg_shape$K)
+  D_conditions <- unique(gg_shape$D)
+  int_conditions <- unique(gg_shape$interval)[2]
+
   methods <- paste(
     c("cont", "disc", "disj", "atte", "PCAmix"),
     collapse = "|"
@@ -55,6 +58,7 @@
     filter(grepl(methods, variable)) %>%
     filter(D %in% D_conditions) %>%
     filter(K %in% K_conditions) %>%
+    filter(interval %in% int_conditions) %>%
     filter(value < 1) %>% # to get rid of some outliers
     # Change labels of X axis
     mutate(variable = fct_relabel(variable, str_replace, result, "")
