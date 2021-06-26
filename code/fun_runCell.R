@@ -15,7 +15,7 @@ runCell <- function(cond,
 # Example Internals -------------------------------------------------------
   
   # set.seed(1234)
-  # cond    = conds[4, ]
+  # cond    = conds[3, ]
   # rp = 1
 
 # Data Generation ---------------------------------------------------------
@@ -32,10 +32,10 @@ runCell <- function(cond,
   n_var_cate <- ceiling((parms$P-1) * cond$D) # number of categorical variables
   keep_continuous <- 1:(ncol(dat_cont)-n_var_cate)
   dat_disc <- apply(dat_cont[, -keep_continuous],
-                    2, function(j){
-      as.numeric(cut(j, breaks = cond$K))
-    })
-
+                    2,
+                    dis_data,
+                    K = cond$K,
+                    interval = TRUE)
   dat_disc <- cbind(dat_cont[, keep_continuous, drop = FALSE], dat_disc)
 
   # Disjunction table
