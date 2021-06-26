@@ -49,7 +49,7 @@
   int_conditions <- unique(gg_shape$interval)[2]
 
   methods <- paste(
-    c("cont", "disc", "disj", "atte", "PCAmix"),
+    c("cont", "disc", "disj", "atte", "dumm", "PCAmix"),
     collapse = "|"
   )
   plot1 <- gg_shape %>%
