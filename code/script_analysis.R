@@ -74,11 +74,13 @@
                                   labels = paste0("K = ", K_conditions))),
                scales = "free") +
     # Format
-    theme(text = element_text(size = 12.5),
+    theme(text = element_text(size = 15),
           plot.title = element_text(hjust = 0.5),
-          axis.text = element_text(size = 12.5),
-          axis.title = element_text(size = 12.5)) +
-    labs(title = result,
+          axis.text = element_text(size = 15),
+          axis.text.x = element_text(angle = 45, hjust = 0.95),
+          axis.title = element_text(size = 15)) +
+    labs(title = paste0("Interval Scale = ", int_conditions,
+                        " (", result, ")"),
          x     = NULL,
          y     = NULL)
 
@@ -87,7 +89,7 @@
 # Save plots --------------------------------------------------------------
 
   file_format <- ".pdf"
-  plot_name <- "plot1_Dfactor"
+  plot_name <- paste0("interval_sacle_", int_conditions)
   out_dir <- "~/Desktop/"
   file_name <- paste0(out_dir, plot_name, file_format)
   pdf(file_name, width = 15, height = 15)
