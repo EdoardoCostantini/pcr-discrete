@@ -88,10 +88,15 @@
 
 # Save plots --------------------------------------------------------------
 
-  file_format <- ".pdf"
+  file_format <- ".png"
   plot_name <- paste0("interval_sacle_", int_conditions)
   out_dir <- "~/Desktop/"
   file_name <- paste0(out_dir, plot_name, file_format)
-  pdf(file_name, width = 15, height = 15)
+  if(file_format == ".pdf"){
+    pdf(file_name, width = 15, height = 15)
+  }
+  if(file_format == ".png"){
+    png(file_name, width = 15, height = 15, units = "in", res = 384)
+  }
   plot1
   dev.off()
