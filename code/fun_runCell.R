@@ -2,7 +2,7 @@
 ### Project:  Ordinality
 ### Author:   Edoardo Costantini
 ### Created:  2021-06-10
-### Modified: 2021-06-24
+### Modified: 2021-06-29
 ### Note:     A "cell" is a cycle through the set of conditions.
 ###           The function in this script generates 1 data set, performs 
 ###           imputations for every condition in the set.
@@ -69,10 +69,7 @@ runCell <- function(cond,
 # Analysis ----------------------------------------------------------------
 
   # Store Correlations
-  cors <- sapply(dts, extract_avg_cor)
-
-  # Estimates and CI regression parameters
-  coefs <- sapply(dts, extract_lm)
+  cors <- lapply(dts, extract_avg_cor)
 
   # PCA results
   pcs_list <- lapply(dts, extract_pcs, npcs = parms$npcs)
@@ -109,20 +106,16 @@ runCell <- function(cond,
   )
 
   # Number of PCs extracted
-  r2 <- sapply(pcs_list, "[[", "r2")
+  r2 <- lapply(pcs_list, "[[", "r2")
 
   # PCR MSE
   dts_pcs <- lapply(pcs_list, "[[", "dat")
-  mses <- sapply(dts_pcs, extract_mse, train = train, test = test)
+  mses <- lapply(dts_pcs, extract_mse, train = train, test = test)
 
 # Store Output ------------------------------------------------------------
 
   ## Define storing object
-  output <- list(cond  = cond,
-                 coefs = coefs,
-                 cors = cors,
-                 r2 = r2,
-                 mses = mses)
+  output <- cbind(cond, cors = cors, r2 = r2, mses = mses)
 
   ## Return it
   saveRDS(output,

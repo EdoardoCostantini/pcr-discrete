@@ -2,7 +2,7 @@
 ### Project:  Ordinality
 ### Author:   Edoardo Costantini
 ### Created:  2021-06-10
-### Modified: 2021-06-22
+### Modified: 2021-06-29
 
   ## Make sure we have a clean environment:
   rm(list = ls())
@@ -19,34 +19,22 @@
 # Load Results ----------------------------------------------------------
 
   inDir <- "../output/"
-  runName <- "20212606_100646"
+  runName <- "20210629_175400"
 
   # Read output
-  sim_out <- readRDS(paste0(inDir, runName, "_res.rds"))
-  gg_shape <- sim_out$gg_shape
+  gg_shape <- readRDS(paste0(inDir, runName, "_res.rds"))
 
   # Support Functions
   source("./helper/functions.R")
-
-# Analyse -----------------------------------------------------------------
-
-  # Possible Results
-  names(sim_out$results[[1]]$rep1)
-
-  # Mean result by name
-  lapply(sim_out$results, average_result, result = "coefs")
-  t(sapply(sim_out$results, average_result, result = "cors"))
-  t(sapply(sim_out$results, average_result, result = "r2"))
-  t(sapply(sim_out$results, average_result, result = "mses"))
 
 # Plots -------------------------------------------------------------------
 
   ## Obtain plots
   result <- c("cors.", "mses.", "r2.")[2]
 
-  K_conditions <- unique(gg_shape$K)
-  D_conditions <- unique(gg_shape$D)
-  int_conditions <- unique(gg_shape$interval)[2]
+  K_conditions <- rev(sort(unique(gg_shape$K)))
+  D_conditions <- sort(unique(gg_shape$D))
+  int_conditions <- unique(gg_shape$interval)[1]
 
   methods <- paste(
     c("cont", "disc", "disj", "atte", "dumm", "PCAmix"),
