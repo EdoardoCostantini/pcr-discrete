@@ -123,7 +123,7 @@ runCell <- function(cond,
                  cors = cors,
                  r2 = r2,
                  mses = mses)
-
+  start <- Sys.time()
   ## Return it
   saveRDS(output,
           file = paste0(settings$outDir,
@@ -131,5 +131,11 @@ runCell <- function(cond,
                         "_cond", cond$tag,
                         ".rds")
   )
+  end <- Sys.time()
+  time_to_store <- difftime(end, start, units = "secs")
+  cat(paste0("Rep: ", rp,
+             ", time to store: ",
+             round(as.numeric(time_to_store), 5), "\n"),
+      file = paste0(settings$outDir, settings$fileName_progress, ".txt"),
+      append = TRUE)
 }
-
