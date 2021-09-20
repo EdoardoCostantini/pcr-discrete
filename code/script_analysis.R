@@ -2,7 +2,7 @@
 ### Project:  Ordinality
 ### Author:   Edoardo Costantini
 ### Created:  2021-06-10
-### Modified: 2021-06-29
+### Modified: 2021-09-20
 
   ## Make sure we have a clean environment:
   rm(list = ls())
@@ -19,7 +19,7 @@
 # Load Results ----------------------------------------------------------
 
   inDir <- "../output/"
-  runName <- "20210629_175400"
+  runName <- "20210920_105107"
 
   # Read output
   gg_shape <- readRDS(paste0(inDir, runName, "_res.rds"))
@@ -37,7 +37,7 @@
   int_conditions <- unique(gg_shape$interval)[1]
 
   methods <- paste(
-    c("cont", "disc", "disj", "atte", "dumm", "PCAmix"),
+    c("orig", "nume", "poly", "dumm", "disj", "PCAmix"),
     collapse = "|"
   )
   plot1 <- gg_shape %>%
