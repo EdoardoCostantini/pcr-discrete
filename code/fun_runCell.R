@@ -2,7 +2,7 @@
 ### Project:  Ordinality
 ### Author:   Edoardo Costantini
 ### Created:  2021-06-10
-### Modified: 2021-06-29
+### Modified: 2021-09-20
 ### Note:     A "cell" is a cycle through the set of conditions.
 ###           The function in this script generates 1 data set, performs 
 ###           imputations for every condition in the set.
@@ -73,6 +73,11 @@ runCell <- function(cond,
 
   # PCA results
   pcs_list <- lapply(dts, extract_pcs, npcs = parms$npcs)
+
+  # PCA w/ polychoric tetrachoric correlations
+  # Get PCs
+  pca_poly <- extract_pcs_poly(dat_disc, npcs = parms$npcs)
+  pcs_list <-   append(pcs_list, list(poly = pca_poly))
 
   # PCAmix results
   dat_disc_quanti <- dat_disc[, keep_continuous[-1]]

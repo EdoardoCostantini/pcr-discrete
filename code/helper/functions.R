@@ -2,7 +2,7 @@
 ### Project:  Imputing High Dimensional Data
 ### Author:   Edoardo Costantini
 ### Created:  2020-05-19
-### Modified: 2021-06-26
+### Modified: 2021-09-20
 
 # Discretize --------------------------------------------------------------
 
@@ -84,6 +84,35 @@ extract_pcs <- function(dt = matrix(), npcs = 1){
   prcomp_dat <- prcomp_out$x[, 1:npcs, drop = FALSE]
   pcs_dat <- cbind(z1 = dt[, 1], prcomp_dat)
   r2 <- (cumsum(prcomp_out$sdev^2) / sum(prcomp_out$sdev^2))[npcs]
+
+  return(list(dat = pcs_dat,
+              r2 = r2))
+}
+
+extract_pcs_poly <- function(dt = matrix(), npcs = 1){
+  # Given a data set A in matrix for, it extracts the first npcs principal
+  # components from A (excluding the first column), and retunrs a dataset
+  # with the first column of A cobined with the extracted components.
+  # It also retunrs the info regarding the proportion of explained variance
+  # by the defined number of components
+  # Example input
+  # dt = MASS::mvrnorm(1e2, rep(0, 3), diag(3))
+  # npcs = 1
+
+  # Define correlation type for PCA
+  col_levels <- apply(dt, 2, function(j){unique(length(j))})
+  principal_cor <- ifelse(any(col_levels != nrow(dt)),
+                          "mixed",
+                          "cor")
+
+  # Extract Components from predictors
+  pcr_out <- psych::principal(dt[, -1],
+                              nfactors = npcs,
+                              cor = principal_cor)
+
+  # Combine Original dependent variable w/ PC predictors
+  pcs_dat <- cbind(z1 = dt[, 1], pcr_out$scores)
+  r2 <- prop.table(pcr_out$values)[1:npcs]
 
   return(list(dat = pcs_dat,
               r2 = r2))
