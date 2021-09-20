@@ -56,7 +56,7 @@ runCell <- function(cond,
 
   # Store datasets in a list
   dts <- list(orig = dat_orig,
-              disc = dat_disc,
+              nume = dat_disc,
               disj = dat_disj,
               dumm = dat_dumm)
 
