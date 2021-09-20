@@ -49,11 +49,6 @@ runCell <- function(cond,
                            cbind(dat_orig[, keep_continuous, drop = FALSE],
                                  dat_fact))[, -1]
 
-  # Generate Continuous Data w/ attenuated relationships
-  Sigma_atte <- cor(dat_disc)
-  mu_atte <- colMeans(dat_disc)
-  dat_atte <- MASS::mvrnorm(parms$N, mu_atte, Sigma_atte)
-
   # Define Training and Testing data
   ind   <- sample(1 : nrow(dat_orig))
   train <- ind[1 : (.8*nrow(dat_orig))]
@@ -62,7 +57,6 @@ runCell <- function(cond,
   # Store datasets in a list
   dts <- list(orig = dat_orig,
               disc = dat_disc,
-              atte = dat_atte,
               disj = dat_disj,
               dumm = dat_dumm)
 
