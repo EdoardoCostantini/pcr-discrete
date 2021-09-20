@@ -19,7 +19,7 @@
 # Load Results ----------------------------------------------------------
 
   inDir <- "../output/"
-  runName <- "20210920_105107"
+  runName <- "20210920_121313"
 
   # Read output
   gg_shape <- readRDS(paste0(inDir, runName, "_res.rds"))
@@ -34,7 +34,7 @@
 
   K_conditions <- rev(sort(unique(gg_shape$K)))
   D_conditions <- sort(unique(gg_shape$D))
-  int_conditions <- unique(gg_shape$interval)[1]
+  int_conditions <- unique(gg_shape$interval)[2]
 
   methods <- paste(
     c("orig", "nume", "poly", "dumm", "disj", "PCAmix"),
