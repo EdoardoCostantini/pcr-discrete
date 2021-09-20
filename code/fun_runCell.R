@@ -25,18 +25,18 @@ runCell <- function(cond,
                   nrow = parms$P, ncol = parms$P)
     diag(Sigma) <- 1
   mu <- rep(parms$item_mean, parms$P)
-  dat_cont <- MASS::mvrnorm(parms$N, mu, Sigma)
-    colnames(dat_cont) <- paste0("z", 1:ncol(dat_cont))
+  dat_orig <- MASS::mvrnorm(parms$N, mu, Sigma)
+    colnames(dat_orig) <- paste0("z", 1:ncol(dat_orig))
 
   # Discretise
   n_var_cate <- ceiling((parms$P-1) * cond$D) # number of categorical variables
-  keep_continuous <- 1:(ncol(dat_cont)-n_var_cate)
-  dat_disc <- apply(dat_cont[, -keep_continuous],
+  keep_continuous <- 1:(ncol(dat_orig)-n_var_cate)
+  dat_disc <- apply(dat_orig[, -keep_continuous],
                     2,
                     dis_data,
                     K = cond$K,
                     interval = cond$interval)
-  dat_disc <- cbind(dat_cont[, keep_continuous, drop = FALSE], dat_disc)
+  dat_disc <- cbind(dat_orig[, keep_continuous, drop = FALSE], dat_disc)
 
   # Disjunction table
   dat_fact <- as.data.frame(lapply(as.data.frame(dat_disc[, -keep_continuous]),
@@ -46,7 +46,7 @@ runCell <- function(cond,
 
   # Dummy Coded version
   dat_dumm <- model.matrix(~ .,
-                           cbind(dat_cont[, keep_continuous, drop = FALSE],
+                           cbind(dat_orig[, keep_continuous, drop = FALSE],
                                  dat_fact))[, -1]
 
   # Generate Continuous Data w/ attenuated relationships
@@ -55,12 +55,12 @@ runCell <- function(cond,
   dat_atte <- MASS::mvrnorm(parms$N, mu_atte, Sigma_atte)
 
   # Define Training and Testing data
-  ind   <- sample(1 : nrow(dat_cont))
-  train <- ind[1 : (.8*nrow(dat_cont))]
-  test  <- ind[(.8*nrow(dat_cont)+1) : nrow(dat_cont)]
+  ind   <- sample(1 : nrow(dat_orig))
+  train <- ind[1 : (.8*nrow(dat_orig))]
+  test  <- ind[(.8*nrow(dat_orig)+1) : nrow(dat_orig)]
 
   # Store datasets in a list
-  dts <- list(cont = dat_cont,
+  dts <- list(orig = dat_orig,
               disc = dat_disc,
               atte = dat_atte,
               disj = dat_disj,
