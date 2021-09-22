@@ -100,7 +100,7 @@ extract_pcs_poly <- function(dt = matrix(), npcs = 1){
   # npcs = 1
 
   # Define correlation type for PCA
-  col_levels <- apply(dt, 2, function(j){unique(length(j))})
+  col_levels <- apply(dt, 2, function(j){length(unique(j))})
   principal_cor <- ifelse(any(col_levels != nrow(dt)),
                           "mixed",
                           "cor")
