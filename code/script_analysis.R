@@ -19,10 +19,11 @@
 # Load Results ----------------------------------------------------------
 
   inDir <- "../output/"
-  runName <- "20210920_121313"
+  files <- grep("rds", list.files(inDir), value = TRUE)
+  runName <- files[length(files)]
 
   # Read output
-  gg_shape <- readRDS(paste0(inDir, runName, "_res.rds"))
+  gg_shape <- readRDS(paste0(inDir, runName))
 
   # Support Functions
   source("./helper/functions.R")
