@@ -2,7 +2,7 @@
 ### Project:  Ordinality
 ### Author:   Edoardo Costantini
 ### Created:  2021-06-10
-### Modified: 2021-09-20
+### Modified: 2021-09-23
 ### Note:     A "cell" is a cycle through the set of conditions.
 ###           The function in this script generates 1 data set, performs 
 ###           imputations for every condition in the set.
@@ -15,7 +15,7 @@ runCell <- function(cond,
 # Example Internals -------------------------------------------------------
   
   # set.seed(1234)
-  # cond    = conds[3, ]
+  # cond    = conds[13, ]
   # rp = 1
 
 # Data Generation ---------------------------------------------------------
@@ -61,9 +61,6 @@ runCell <- function(cond,
               dumm = dat_dumm)
 
 # Analysis ----------------------------------------------------------------
-
-  # Store Correlations
-  cors <- lapply(dts, extract_avg_cor)
 
   # PCA results
   pcs_list <- lapply(dts, extract_pcs, npcs = parms$npcs)
@@ -113,7 +110,7 @@ runCell <- function(cond,
 # Store Output ------------------------------------------------------------
 
   ## Define storing object
-  output <- cbind(cond, cors = cors, r2 = r2, mses = mses)
+  output <- cbind(cond, r2 = r2, mses = mses)
 
   ## Return it
   saveRDS(output,

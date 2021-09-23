@@ -2,7 +2,7 @@
 ### Project:  Imputing High Dimensional Data
 ### Author:   Edoardo Costantini
 ### Created:  2020-05-19
-### Modified: 2021-09-20
+### Modified: 2021-09-222
 
 # Discretize --------------------------------------------------------------
 
@@ -35,19 +35,6 @@ dis_data <- function(x, K, interval = TRUE){
     x_dis <- map[match(target, map$value), "bin"]
   }
   return(x_dis)
-}
-
-# Average correlation -----------------------------------------------------
-
-extract_avg_cor <- function(dt = matrix()){
-  # Given a dataset in matrix, it returns the average correlation
-  # dt = MASS::mvrnorm(1e2, rep(0, 3), diag(3))
-  # Body
-  cmat <- cor(dt)
-  imat <- lower.tri(cmat) # index matrix
-  mean_cor <- mean(cmat[imat])
-
-  return(mean_cor)
 }
 
 # LM coefficients and CIs -------------------------------------------------

@@ -2,7 +2,7 @@
 ### Project:  Ordinality
 ### Author:   Edoardo Costantini
 ### Created:  2021-06-10
-### Modified: 2021-09-20
+### Modified: 2021-09-22
 
   ## Make sure we have a clean environment:
   rm(list = ls())
@@ -31,7 +31,7 @@
 # Plots -------------------------------------------------------------------
 
   ## Obtain plots
-  result <- c("cors.", "mses.", "r2.")[2]
+  result <- c("mses.", "r2.")[2]
 
   K_conditions <- rev(sort(unique(gg_shape$K)))
   D_conditions <- sort(unique(gg_shape$D))
