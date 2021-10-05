@@ -2,7 +2,7 @@
 ### Project:  Ordinality
 ### Author:   Edoardo Costantini
 ### Created:  2021-06-10
-### Modified: 2021-09-22
+### Modified: 2021-10-05
 
   ## Make sure we have a clean environment:
   rm(list = ls())
@@ -29,6 +29,16 @@
   source("./helper/functions.R")
 
 # Plots -------------------------------------------------------------------
+
+  # Correct order of methods
+  levels(gg_shape$variable)
+  new_order <- levels(gg_shape$variable)[c(grep("orig", unique(gg_shape$variable)),
+                                           grep("nume", unique(gg_shape$variable)),
+                                           grep("poly", unique(gg_shape$variable)),
+                                           grep("dumm", unique(gg_shape$variable)),
+                                           grep("disj", unique(gg_shape$variable)),
+                                           grep("PCAmix", unique(gg_shape$variable)))]
+  gg_shape$variable <- factor(gg_shape$variable, levels = new_order)
 
   ## Obtain plots
   result <- c("mses.", "r2.")[2]
