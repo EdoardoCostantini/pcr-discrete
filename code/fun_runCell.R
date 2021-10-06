@@ -21,7 +21,7 @@ runCell <- function(cond,
 # Data Generation ---------------------------------------------------------
   
   # Generate Continuous Data
-  Sigma <- matrix(parms$item_cor,
+  Sigma <- matrix(cond$rho,
                   nrow = parms$P, ncol = parms$P)
     diag(Sigma) <- 1
   mu <- rep(parms$item_mean, parms$P)
