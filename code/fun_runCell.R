@@ -30,18 +30,20 @@ runCell <- function(cond,
   })
   Sigma <- Matrix::bdiag(Sigma_blocks)
   mu <- rep(parms$item_mean, parms$P)
-  dat_orig <- MASS::mvrnorm(parms$N, mu, Sigma)
+  dat_orig <- data.frame(MASS::mvrnorm(parms$N, mu, Sigma))
     colnames(dat_orig) <- paste0("z", 1:ncol(dat_orig))
 
   # Discretise
   n_var_cate <- ceiling((parms$P-1) * cond$D) # number of categorical variables
-  keep_continuous <- 1:(ncol(dat_orig)-n_var_cate)
-  dat_disc <- apply(dat_orig[, -keep_continuous],
-                    2,
-                    dis_data,
-                    K = cond$K,
-                    interval = cond$interval)
-  dat_disc <- cbind(dat_orig[, keep_continuous, drop = FALSE], dat_disc)
+  index_cont <- 1 : (parms$P - n_var_cate) # Continuous variables
+  index_disc <- tail(1:parms$P, n_var_cate) # Discrete variables
+
+  dat_disc <- lapply(dat_orig[, -index_cont],
+                     disData,
+                     K = cond$K,
+                     interval = cond$interval)
+
+  dat_disc <- cbind(dat_orig[, index_cont, drop = FALSE], dat_disc)
 
   # Disjunction table
   dat_fact <- as.data.frame(lapply(as.data.frame(dat_disc[, -keep_continuous]),
@@ -76,8 +78,8 @@ runCell <- function(cond,
   pcs_list <-   append(pcs_list, list(poly = pca_poly))
 
   # PCAmix results
-  dat_disc_quanti <- dat_disc[, keep_continuous[-1]]
-  dat_disc_quali <- as.data.frame(dat_disc[, -keep_continuous])
+  dat_disc_quanti <- dat_disc[, index_cont[-1]]
+  dat_disc_quali <- as.data.frame(dat_disc[, -index_cont])
     dat_disc_quali <- as.data.frame(lapply(dat_disc_quali, factor))
   if(ncol(dat_disc_quanti) == 0){
     pcamix <- PCAmix(X.quali = dat_disc_quali,
