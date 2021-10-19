@@ -99,7 +99,7 @@ extract_pcs_poly <- function(dt = matrix(), npcs = 1){
 
   # Combine Original dependent variable w/ PC predictors
   pcs_dat <- cbind(z1 = dt[, 1], pcr_out$scores)
-  r2 <- prop.table(pcr_out$values)[1:npcs]
+  r2 <- cumsum(prop.table(pcr_out$values))[npcs]
 
   return(list(dat = pcs_dat,
               r2 = r2))
