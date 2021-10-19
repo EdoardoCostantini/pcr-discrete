@@ -2,7 +2,7 @@
 ### Project:  Ordinality
 ### Author:   Edoardo Costantini
 ### Created:  2021-06-10
-### Modified: 2021-09-20
+### Modified: 2021-10-19
 
   ## Make sure we have a clean environment:
   rm(list = ls())
@@ -15,7 +15,7 @@
   inDir <- "../output/"
   files <- grep("tar", list.files(inDir), value = TRUE)
   target_tar <- files[length(files)]
-  output <- read.tar.gz(target_tar)
+  output <- readTarGz(target_tar)
 
 # Restructure Results -----------------------------------------------------
 # list of conditions containing results for every repetition

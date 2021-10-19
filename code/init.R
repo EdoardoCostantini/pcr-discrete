@@ -21,12 +21,20 @@
 
 # Load Functions ----------------------------------------------------------
 
-  # Simulation
-  source("./fun_runCell.R")
-  source("./fun_doRep.R")
+  # Subroutines
+  all_subs <- paste0("./subroutines/",
+                     list.files("./subroutines/"))
+  lapply(all_subs, source)
 
-  # Support Functions
-  source("./helper/functions.R")
+  # Functions
+  all_funs <- paste0("./functions/",
+                     list.files("./functions/"))
+  lapply(all_funs, source)
+
+  # Helper
+  all_help <- paste0("./helper/",
+                     list.files("./helper/"))
+  lapply(all_help, source)
 
 # Fixed Parameters --------------------------------------------------------
 
@@ -54,7 +62,7 @@
   # Parallel Experiments: for the continuous and attenuated relationship
   # Alternative experimental factor
   n_cate <- c(10, 7, 5, 3, 2)
-  p_cate <- round(seq(.25, 1, length.out = 4), 2)
+  p_cate <- round(seq(0, 1, length.out = 6), 2)
   interval <- c(TRUE, FALSE)
   rho <- seq(0.1, .9, .1)
   blocks <- c(1, 5)

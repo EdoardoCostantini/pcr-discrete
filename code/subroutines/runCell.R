@@ -112,7 +112,7 @@ runCell <- function(cond,
 
   # PCR MSE
   dts_pcs <- lapply(pcs_list, "[[", "dat")
-  mses <- lapply(dts_pcs, extract_mse, train = train, test = test)
+  mses <- lapply(dts_pcs, extractMSE, train = train, test = test)
 
 # Store Output ------------------------------------------------------------
 

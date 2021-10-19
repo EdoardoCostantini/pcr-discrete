@@ -2,28 +2,32 @@
 ### Project:  Ordinality
 ### Author:   Edoardo Costantini
 ### Created:  2021-06-10
-### Modified: 2021-06-22
+### Modified: 2021-10-19
 
 ## Make sure we have a clean environment:
 rm(list = ls())
 
 ## Initialize the environment:
-source("./settings.R")
 source("./init.R")
 
-## Create a cluster object:
-clus <- makeCluster(10)
+## Prepare storing results
+source("./fs.R")
 
 ## Progress report file
-file.create(paste0(settings$outDir, settings$fileName_progress, ".txt"))
+dir.create(fs$outDir)
+file.create(paste0(fs$outDir, fs$fileName_prog, ".txt"))
 
 cat(paste0("SIMULATION PROGRESS REPORT",
            "\n",
            "Starts at: ", Sys.time(),
            "\n", "------", "\n" ),
-    file = paste0(settings$outDir, settings$fileName_progress, ".txt"),
+    file = paste0(fs$outDir, fs$fileName_prog, ".txt"),
     sep = "\n",
     append = TRUE)
+
+## Define repetitions and clusters
+reps <- 1 : 500
+clus <- makeCluster(10)
 
 ## Export to worker nodes
 clusterExport(cl = clus, varlist = "settings", envir = .GlobalEnv) # export global env
@@ -35,7 +39,7 @@ sim_start <- Sys.time()
 
 ## Run the computations in parallel on the 'clus' object:
 out <- parLapply(cl    = clus,
-                 X     = 1 : parms$dt_rep,
+                 X     = reps,
                  fun   = doRep,
                  conds = conds,
                  parms = parms,
@@ -68,4 +72,4 @@ saveRDS(out_support,
 
 # Zip output folder -------------------------------------------------------
 
-write.tar.gz(settings$fileName)
+writeTarGz(settings$fileName)
