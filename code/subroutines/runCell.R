@@ -46,14 +46,14 @@ runCell <- function(cond,
   dat_disc <- cbind(dat_orig[, index_cont, drop = FALSE], dat_disc)
 
   # Disjunction table
-  dat_fact <- as.data.frame(lapply(as.data.frame(dat_disc[, -keep_continuous]),
+  dat_fact <- as.data.frame(lapply(as.data.frame(dat_disc[, -index_cont]),
                                    factor, ordered = FALSE))
-  dat_disj <- cbind(dat_disc[, keep_continuous, drop = FALSE],
+  dat_disj <- cbind(dat_disc[, index_cont, drop = FALSE],
                     tab.disjonctif(dat_fact))
 
   # Dummy Coded version
   dat_dumm <- model.matrix(~ .,
-                           cbind(dat_orig[, keep_continuous, drop = FALSE],
+                           cbind(dat_orig[, index_cont, drop = FALSE],
                                  dat_fact))[, -1]
 
   # Define Training and Testing data
