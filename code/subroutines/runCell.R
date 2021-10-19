@@ -41,12 +41,13 @@ runCell <- function(cond,
   index_cont <- 1 : (parms$P - n_var_cate) # Continuous variables
   index_disc <- tail(1:parms$P, n_var_cate) # Discrete variables
 
-  dat_disc <- lapply(dat_orig[, -index_cont],
+  col_disc <- lapply(dat_orig[, index_disc],
                      disData,
                      K = cond$K,
                      interval = cond$interval)
 
-  dat_disc <- cbind(dat_orig[, index_cont, drop = FALSE], dat_disc)
+  dat_disc <- cbind(dat_orig[, index_cont, drop = FALSE],
+                    col_disc)
 
   # Disjunction table
   dat_fact <- as.data.frame(lapply(as.data.frame(dat_disc[, -index_cont]),
