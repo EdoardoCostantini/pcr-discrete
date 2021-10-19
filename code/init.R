@@ -2,7 +2,7 @@
 ### Project:  Ordinality
 ### Author:   Edoardo Costantini
 ### Created:  2021-06-10
-### Modified: 2021-10-06
+### Modified: 2021-10-19
 
 # Packages ----------------------------------------------------------------
 
@@ -56,14 +56,14 @@
   n_cate <- c(10, 7, 5, 3, 2)
   p_cate <- round(seq(.25, 1, length.out = 4), 2)
   interval <- c(TRUE, FALSE)
-  cor <- seq(0.1, .9, .1)
+  rho <- seq(0.1, .9, .1)
 
   # Make Conditionsa
   conds <- expand.grid(N  = parms$N, # sample size
                        P  = parms$P, # number of total variables
                        K = n_cate, # number of categories
                        D = p_cate, # ordinality degree
-                       rho = cor,    # correlation strength
+                       rho = rho,    # correlation strength
                        interval = interval,
                        stringsAsFactors = FALSE)
 
