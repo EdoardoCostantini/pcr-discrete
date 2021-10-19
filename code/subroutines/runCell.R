@@ -2,7 +2,7 @@
 ### Project:  Ordinality
 ### Author:   Edoardo Costantini
 ### Created:  2021-06-10
-### Modified: 2021-09-23
+### Modified: 2021-10-19
 ### Note:     A "cell" is a cycle through the set of conditions.
 ###           The function in this script generates 1 data set, performs 
 ###           imputations for every condition in the set.
@@ -61,23 +61,24 @@ runCell <- function(cond,
   train <- ind[1 : (.8*nrow(dat_orig))]
   test  <- ind[(.8*nrow(dat_orig)+1) : nrow(dat_orig)]
 
-  # Store datasets in a list
-  dts <- list(orig = dat_orig,
-              nume = dat_disc,
-              disj = dat_disj,
-              dumm = dat_dumm)
-
 # Analysis ----------------------------------------------------------------
 
-  # PCA results
-  pcs_list <- lapply(dts, extractPCs, npcs = cond$blocks)
+  # PCA Original
+  pcs_orig <- extractPCs(dat_orig, npcs = cond$blocks, cor_type = "cor")
 
-  # PCA w/ polychoric tetrachoric correlations
-  # Get PCs
-  pca_poly <- extract_pcs_poly(dat_disc, npcs = cond$blocks)
-  pcs_list <-   append(pcs_list, list(poly = pca_poly))
+  # PCA Numerical
+  pcs_nume <- extractPCs(dat_disc, npcs = cond$blocks, cor_type = "cor")
 
-  # PCAmix results
+  # PCA Polychoric
+  pcs_poly <- extractPCs(dat_disc, npcs = cond$blocks, cor_type = "mixed")
+
+  # PCA Disjunction table
+  pcs_disj <- extractPCs(dat_disj, npcs = cond$blocks, cor_type = "cor")
+
+  # PCA Dummy
+  pcs_dumm <- extractPCs(dat_dumm, npcs = cond$blocks, cor_type = "cor")
+
+  # PCAmix
   dat_disc_quanti <- dat_disc[, index_cont[-1]]
   dat_disc_quali <- as.data.frame(dat_disc[, -index_cont])
     dat_disc_quali <- as.data.frame(lapply(dat_disc_quali, factor))
@@ -101,10 +102,14 @@ runCell <- function(cond,
   )
 
   # Append results
-  pcs_list <-   append(pcs_list,
-                       list(PCAmix = list(dat = pcamix_dat,
-                                          r2 = pcamix_r2)
-                       )
+  pcs_list <- list(
+    orig = pcs_orig,
+    nume = pcs_nume,
+    poly = pcs_poly,
+    disj = pcs_disj,
+    dumm = pcs_dumm,
+    PCAmix = list(dat = pcamix_dat,
+                  r2 = pcamix_r2)
   )
 
   # Number of PCs extracted
