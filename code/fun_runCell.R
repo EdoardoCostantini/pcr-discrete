@@ -21,9 +21,14 @@ runCell <- function(cond,
 # Data Generation ---------------------------------------------------------
   
   # Generate Continuous Data
-  Sigma <- matrix(cond$rho,
-                  nrow = parms$P, ncol = parms$P)
+  Sigma_blocks <- lapply(1:cond$blocks, function (x){
+    Sigma <- matrix(cond$rho,
+                    nrow = parms$P/cond$blocks,
+                    ncol = parms$P/cond$blocks)
     diag(Sigma) <- 1
+    Sigma
+  })
+  Sigma <- Matrix::bdiag(Sigma_blocks)
   mu <- rep(parms$item_mean, parms$P)
   dat_orig <- MASS::mvrnorm(parms$N, mu, Sigma)
     colnames(dat_orig) <- paste0("z", 1:ncol(dat_orig))
@@ -63,11 +68,11 @@ runCell <- function(cond,
 # Analysis ----------------------------------------------------------------
 
   # PCA results
-  pcs_list <- lapply(dts, extract_pcs, npcs = parms$npcs)
+  pcs_list <- lapply(dts, extractPCs, npcs = cond$blocks)
 
   # PCA w/ polychoric tetrachoric correlations
   # Get PCs
-  pca_poly <- extract_pcs_poly(dat_disc, npcs = parms$npcs)
+  pca_poly <- extract_pcs_poly(dat_disc, npcs = cond$blocks)
   pcs_list <-   append(pcs_list, list(poly = pca_poly))
 
   # PCAmix results

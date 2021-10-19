@@ -57,6 +57,7 @@
   p_cate <- round(seq(.25, 1, length.out = 4), 2)
   interval <- c(TRUE, FALSE)
   rho <- seq(0.1, .9, .1)
+  blocks <- c(1, 5)
 
   # Make Conditionsa
   conds <- expand.grid(N  = parms$N, # sample size
@@ -64,6 +65,7 @@
                        K = n_cate, # number of categories
                        D = p_cate, # ordinality degree
                        rho = rho,    # correlation strength
+                       blocks = blocks,
                        interval = interval,
                        stringsAsFactors = FALSE)
 
