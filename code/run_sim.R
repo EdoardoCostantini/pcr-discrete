@@ -26,8 +26,8 @@ cat(paste0("SIMULATION PROGRESS REPORT",
     append = TRUE)
 
 ## Define repetitions and clusters
-reps <- 1 : 500
-clus <- makeCluster(10)
+reps <- 1 : 5
+clus <- makeCluster(5)
 
 ## Export to worker nodes
 # export global env

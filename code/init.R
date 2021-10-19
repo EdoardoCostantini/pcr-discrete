@@ -50,7 +50,7 @@
 
   # Data generation
   parms$N <- 1e3 # sample size
-  parms$P <- 50 # number of variables
+  parms$P <- 25 # number of variables
   parms$item_mean <- 0 # true item mean
   parms$item_var  <- 1 # true item variance
 
@@ -62,7 +62,7 @@
   # Parallel Experiments: for the continuous and attenuated relationship
   # Alternative experimental factor
   n_cate <- c(10, 7, 5, 3, 2)
-  p_cate <- round(seq(0, 1, length.out = 6), 2)
+  p_cate <- round(seq(.2, 1, length.out = 5), 2)
   interval <- c(TRUE, FALSE)
   rho <- seq(0.1, .9, .1)
   blocks <- c(1, 5)
