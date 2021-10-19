@@ -14,21 +14,20 @@ extractPCs <- function(dt = matrix(), npcs = 1, cor_type = "cor"){
   # need pearson, polyserial, polychoric, tetrachoric correlations
 
   ## Example input
-  # dt = MASS::mvrnorm(1e2, rep(0, 3), diag(3))
+  # dt = dat_orig # MASS::mvrnorm(1e2, rep(0, 3), diag(3))
   # npcs = 1
   # cor_type = c("cor", "mixed")[2]
 
   # PC
-  pcr_out <- psych::principal(dt[, -1],
+  pcr_out <- psych::principal(dt,
                               nfactors = npcs,
                               cor = cor_type,
   )
 
-  # Combine Original dependent variable w/ PC predictors
-  pcs_dat <- cbind(z1 = dt[, 1], pcr_out$scores)
-  cor(cbind(z1 = dt[, 1], pcr_out$scores))
+  # Compute CPVE
   r2 <- cumsum(prop.table(pcr_out$values))[npcs]
 
-  return(list(dat = pcs_dat,
+  # Store
+  return(list(dat = pcr_out$scores,
               r2 = r2))
 }

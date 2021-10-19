@@ -33,8 +33,11 @@ runCell <- function(cond,
   dat_orig <- data.frame(MASS::mvrnorm(parms$N, mu, Sigma))
     colnames(dat_orig) <- paste0("z", 1:ncol(dat_orig))
 
+  # Generate a dependent variable
+  y <- 5 + as.matrix(dat_orig) %*% rep(1, parms$P) + rnorm(parms$N, 0, 2.5)
+
   # Discretise
-  n_var_cate <- ceiling((parms$P-1) * cond$D) # number of categorical variables
+  n_var_cate <- parms$P * cond$D # number of categorical variables
   index_cont <- 1 : (parms$P - n_var_cate) # Continuous variables
   index_disc <- tail(1:parms$P, n_var_cate) # Discrete variables
 
@@ -79,7 +82,7 @@ runCell <- function(cond,
   pcs_dumm <- extractPCs(dat_dumm, npcs = cond$blocks, cor_type = "cor")
 
   # PCAmix
-  dat_disc_quanti <- dat_disc[, index_cont[-1]]
+  dat_disc_quanti <- dat_disc[, index_cont]
   dat_disc_quali <- as.data.frame(dat_disc[, -index_cont])
     dat_disc_quali <- as.data.frame(lapply(dat_disc_quali, factor))
   if(ncol(dat_disc_quanti) == 0){
@@ -93,8 +96,7 @@ runCell <- function(cond,
                      rename.level = TRUE,
                      ndim = ncol(dat_disc), graph = FALSE)
   }
-  pcamix_dat <- cbind(z1 = dat_disc[, 1],
-                      PC = pcamix$ind$coord[, 1:parms$npcs, drop = FALSE])
+  pcamix_dat <- pcamix$ind$coord[, 1:parms$npcs, drop = FALSE]
   var_exp <- apply(pcamix$ind$coord, 2, var) # same
   var_tot <- sum(var_exp)
   pcamix_r2 <- unname( # cumulative variance explained
@@ -116,8 +118,7 @@ runCell <- function(cond,
   r2 <- lapply(pcs_list, "[[", "r2")
 
   # PCR MSE
-  dts_pcs <- lapply(pcs_list, "[[", "dat")
-  mses <- lapply(dts_pcs, extractMSE, train = train, test = test)
+  mses <- lapply(dts_pcs, extractMSE, y = y, train = train, test = test)
 
 # Store Output ------------------------------------------------------------
 

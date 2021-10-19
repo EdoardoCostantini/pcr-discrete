@@ -4,21 +4,23 @@
 # Created:   2021-10-19
 # Modified:  2021-10-19
 
-extractMSE <- function(dt = matrix(),
-                        train = vector("integer"),
-                        test = vector("integer")){
+extractMSE <- function(y = vector(),
+                       x = matrix(),
+                       train = vector("integer"),
+                       test = vector("integer")){
   ## Description
   # Given a dependent variable and a list of PCs, this regresses y on
   # the PCs and extracts then it extracts the test MSE
 
   ## Example input
-  # dt    = MASS::mvrnorm(1e2, rep(0, 3), diag(3))
-  # ind   = sample(1 : nrow(dt))
-  # train = ind[1 : (.9*nrow(dt))]
-  # test  = ind[(.9*nrow(dt)+1) : nrow(dt)]
+  # x = MASS::mvrnorm(1e2, rep(0, 3), diag(3))
+  # y = x %+% rep(1, 3) + rnorm(nrow(x))
+  # ind   = sample(1 : nrow(x))
+  # train = ind[1 : (.9*nrow(x))]
+  # test  = ind[(.9*nrow(x)+1) : nrow(x)]
 
   ## Transform into data frame
-  dt_df <- as.data.frame(dt)
+  dt_df <- data.frame(y = y, x = x)
 
   ## Check column names have no spaces
   colnames(dt_df) <- sapply(colnames(dt_df), str_replace, " ", "")
