@@ -9,7 +9,7 @@
 
 runCell <- function(cond,
                     parms,
-                    settings,
+                    fs,
                     rp) {
 
 # Example Internals -------------------------------------------------------
@@ -126,7 +126,7 @@ runCell <- function(cond,
 
   ## Return it
   saveRDS(output,
-          file = paste0(settings$outDir,
+          file = paste0(fs$outDir,
                         "rep", rp,
                         "_cond", cond$tag,
                         ".rds")

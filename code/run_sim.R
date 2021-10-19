@@ -30,8 +30,10 @@ reps <- 1 : 500
 clus <- makeCluster(10)
 
 ## Export to worker nodes
-clusterExport(cl = clus, varlist = "settings", envir = .GlobalEnv) # export global env
-clusterEvalQ(cl = clus, expr = source("./init.R")) # execute script
+# export global env
+clusterExport(cl = clus, varlist = "fs", envir = .GlobalEnv)
+# export script to be executed
+clusterEvalQ(cl = clus, expr = source("./init.R"))
 
 # mcApply parallel --------------------------------------------------------
 
@@ -43,7 +45,7 @@ out <- parLapply(cl    = clus,
                  fun   = doRep,
                  conds = conds,
                  parms = parms,
-                 settings = settings)
+                 fs = fs)
 
 ## Kill the cluster:
 stopCluster(clus)
@@ -55,7 +57,7 @@ cat(paste0("\n", "------", "\n",
            "Run time: ",
            round(difftime(sim_ends, sim_start, units = "hours"), 3), " h",
            "\n", "------", "\n"),
-    file = paste0(settings$outDir, settings$fileName_progress, ".txt"),
+    file = paste0(fs$outDir, fs$fileName_prog, ".txt"),
     sep = "\n",
     append = TRUE)
 
@@ -68,8 +70,8 @@ out_support$session_info <- devtools::session_info()
 # Save output -------------------------------------------------------------
 
 saveRDS(out_support,
-        paste0(settings$outDir, "sInfo.rds"))
+        paste0(fs$outDir, "sInfo.rds"))
 
 # Zip output folder -------------------------------------------------------
 
-writeTarGz(settings$fileName)
+writeTarGz(fs$fileName_res)

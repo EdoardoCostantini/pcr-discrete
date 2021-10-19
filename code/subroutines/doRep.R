@@ -2,11 +2,11 @@
 ### Project:  Ordinality
 ### Author:   Edoardo Costantini
 ### Created:  2021-06-10
-### Modified: 2021-06-15
+### Modified: 2021-10-19
 ### Note:     doRep performs a single run of fun_runCell for every condition
 
 ## Run one replication of the simulation:
-doRep <- function(rp, conds, parms, settings) {
+doRep <- function(rp, conds, parms, fs) {
   ## For internals
   # rp = 1
 
@@ -20,7 +20,7 @@ doRep <- function(rp, conds, parms, settings) {
   # parms$rep_counter <- parms$rep_counter + 1 # increase progres report counter
   cat(paste0(Sys.time(), " - Starts Repetition: ", rp, 
              "\n"),
-      file = paste0(settings$outDir, settings$fileName_progress, ".txt"),
+      file = paste0(fs$outDir, fs$fileName_prog, ".txt"),
       append = TRUE)
 
 # Cycle through conditions ------------------------------------------------
@@ -31,7 +31,7 @@ doRep <- function(rp, conds, parms, settings) {
       # Try running simulation for condition i, repetition rp
       runCell(cond = conds[i, ],
               parms = parms,
-              settings = settings,
+              fs = fs,
               rp = rp)
     },
       error = function(report) {
