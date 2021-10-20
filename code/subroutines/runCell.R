@@ -38,9 +38,8 @@ runCell <- function(cond,
 
   # Discretise
   n_var_cate <- parms$P * cond$D # number of categorical variables
-  index_cont <- 1 : (parms$P - n_var_cate) # Continuous variables
   index_disc <- tail(1:parms$P, n_var_cate) # Discrete variables
-
+  index_cont <- which(!(1:parms$P %in% index_disc)) # Continuous variables
   col_disc <- lapply(dat_orig[, index_disc],
                      disData,
                      K = cond$K,
@@ -50,7 +49,7 @@ runCell <- function(cond,
                     col_disc)
 
   # Disjunction table
-  dat_fact <- as.data.frame(lapply(as.data.frame(dat_disc[, -index_cont]),
+  dat_fact <- as.data.frame(lapply(as.data.frame(dat_disc[, index_disc]),
                                    factor, ordered = FALSE))
   dat_disj <- cbind(dat_disc[, index_cont, drop = FALSE],
                     tab.disjonctif(dat_fact))
@@ -84,7 +83,7 @@ runCell <- function(cond,
 
   # PCAmix
   dat_disc_quanti <- dat_disc[, index_cont]
-  dat_disc_quali <- as.data.frame(dat_disc[, -index_cont])
+  dat_disc_quali <- dat_disc[, index_disc]
     dat_disc_quali <- as.data.frame(lapply(dat_disc_quali, factor))
   if(ncol(dat_disc_quanti) == 0){
     pcamix <- PCAmix(X.quali = dat_disc_quali,
