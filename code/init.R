@@ -15,6 +15,7 @@
                  "PCAmixdata",
                  "psych",
                  "stringr",
+                 "dplyr",
                  "FactoMineR")
 
   lapply(pack_list, library, character.only = TRUE, verbose = FALSE)
