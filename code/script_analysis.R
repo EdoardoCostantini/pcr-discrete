@@ -2,7 +2,7 @@
 ### Project:  Ordinality
 ### Author:   Edoardo Costantini
 ### Created:  2021-06-10
-### Modified: 2021-10-05
+### Modified: 2021-10-20
 
   ## Make sure we have a clean environment:
   rm(list = ls())
@@ -19,11 +19,13 @@
 # Load Results ----------------------------------------------------------
 
   inDir <- "../output/"
-  files <- grep("rds", list.files(inDir), value = TRUE)
+  file_lin <- grep("_lin", list.files(inDir), value = TRUE)
+  file_box <- grep("_box", list.files(inDir), value = TRUE)
   runName <- files[length(files)]
 
   # Read output
-  gg_shape <- readRDS(paste0(inDir, runName))
+  gg_shape <- readRDS(paste0(inDir, file_lin))
+  gg_line <- readRDS(paste0(inDir, file_box))
 
   # Support Functions
   source("./init.R")
@@ -34,7 +36,9 @@
 
   K_conditions <- rev(sort(unique(gg_shape$K)))
   D_conditions <- sort(unique(gg_shape$D))
-  int_conditions <- unique(gg_shape$interval)[2]
+  int_conditions <- unique(gg_shape$interval)[1]
+  rho_conditions <- unique(gg_shape$rho)[7]
+  blocks_conditions <- unique(gg_shape$blocks)[2]
 
   methods <- paste(
     c("orig", "nume", "poly", "dumm", "disj", "PCAmix"),
@@ -47,12 +51,15 @@
     filter(D %in% D_conditions) %>%
     filter(K %in% K_conditions) %>%
     filter(interval %in% int_conditions) %>%
-    filter(value < 1) %>% # to get rid of some outliers
+    filter(blocks %in% blocks_conditions) %>%
+    filter(rho %in% rho_conditions) %>%
+    # Obtain Root MSE
+    mutate(rmse = sqrt(value)) %>%
     # Change labels of X axis
     mutate(variable = fct_relabel(variable, str_replace, result, "")
     ) %>%
     # Main Plot
-    ggplot(aes(x = variable, y = value)) +
+    ggplot(aes(x = variable, y = rmse)) +
     geom_boxplot() +
     # Grid
     facet_grid(rows = vars(factor(D,
@@ -60,17 +67,19 @@
                cols = vars(factor(K,
                                   levels = K_conditions,
                                   labels = paste0("K = ", K_conditions))),
-               scales = "free") +
+               scales = "fixed") +
     # Format
     theme(text = element_text(size = 15),
           plot.title = element_text(hjust = 0.5),
           axis.text = element_text(size = 15),
           axis.text.x = element_text(angle = 45, hjust = 0.95),
           axis.title = element_text(size = 15)) +
-    labs(title = paste0("Interval Scale = ", int_conditions,
-                        " (", result, ")"),
+    labs(title = paste0("interval: ", int_conditions, "; ",
+                        "cor level: ", rho_conditions, "; ",
+                        "cov blocks: ", blocks_conditions),
          x     = NULL,
-         y     = NULL)
+         y     = result) +
+    coord_cartesian(ylim = c(0, 25))
 
   plot1
 
