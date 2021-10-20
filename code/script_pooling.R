@@ -2,13 +2,13 @@
 ### Project:  Ordinality
 ### Author:   Edoardo Costantini
 ### Created:  2021-06-10
-### Modified: 2021-10-19
+### Modified: 2021-10-20
 
   ## Make sure we have a clean environment:
   rm(list = ls())
 
   ## Support Functions
-  source("./helper/functions.R")
+  source("./init.R")
 
 # Load Results ----------------------------------------------------------
 

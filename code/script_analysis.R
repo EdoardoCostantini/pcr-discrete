@@ -26,7 +26,7 @@
   gg_shape <- readRDS(paste0(inDir, runName))
 
   # Support Functions
-  source("./helper/functions.R")
+  source("./init.R")
 
 # Plots -------------------------------------------------------------------
 
