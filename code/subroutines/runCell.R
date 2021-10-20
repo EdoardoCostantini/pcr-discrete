@@ -97,7 +97,7 @@ runCell <- function(cond,
                      rename.level = TRUE,
                      ndim = ncol(dat_disc), graph = FALSE)
   }
-  pcamix_dat <- pcamix$ind$coord[, 1:parms$npcs, drop = FALSE]
+  pcamix_dat <- pcamix$ind$coord[, 1:cond$blocks, drop = FALSE]
   var_exp <- apply(pcamix$ind$coord, 2, var) # same
   var_tot <- sum(var_exp)
   pcamix_r2 <- unname( # cumulative variance explained
