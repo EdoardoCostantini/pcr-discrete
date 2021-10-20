@@ -114,9 +114,15 @@ runCell <- function(cond,
     PCAmix = list(dat = pcamix_dat,
                   r2 = pcamix_r2)
   )
+  dts_pcs <- lapply(pcs_list, "[[", "dat")
 
   # Number of PCs extracted
   r2 <- lapply(pcs_list, "[[", "r2")
+
+  # Cor with dv
+  cors <- lapply(dts_pcs, function(x){
+    abs(colMeans(cor(x = x, y = y)))
+  })
 
   # PCR MSE
   mses <- lapply(dts_pcs, extractMSE, y = y, train = train, test = test)
@@ -124,7 +130,7 @@ runCell <- function(cond,
 # Store Output ------------------------------------------------------------
 
   ## Define storing object
-  output <- cbind(cond, r2 = r2, mses = mses)
+  output <- cbind(cond, r2 = r2, cors = cors, mses = mses)
 
   ## Return it
   saveRDS(output,
