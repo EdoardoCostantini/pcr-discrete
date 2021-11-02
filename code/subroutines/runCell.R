@@ -28,9 +28,13 @@ runCell <- function(cond,
     diag(Sigma) <- 1
     Sigma
   })
-  Sigma <- Matrix::bdiag(Sigma_blocks)
+  Sigma <- as.matrix(Matrix::bdiag(Sigma_blocks))
   mu <- rep(parms$item_mean, parms$P)
-  dat_orig <- data.frame(MASS::mvrnorm(parms$N, mu, Sigma))
+  cpM <- list(mean = mu,
+              var.cov = Sigma,
+              gamma1 = rep(cond$skewness, parms$P))
+  dpM <- cp2dp(cpM, family = "SN")
+  dat_orig <- rmsn(parms$N, dp = dpM)
     colnames(dat_orig) <- paste0("z", 1:ncol(dat_orig))
 
   # Generate a dependent variable

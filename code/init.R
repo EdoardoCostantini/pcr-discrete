@@ -16,6 +16,7 @@
                  "psych",
                  "stringr",
                  "dplyr",
+                 "sn", # for Multivariate Skewed Distribution
                  "FactoMineR")
 
   lapply(pack_list, library, character.only = TRUE, verbose = FALSE)
@@ -64,7 +65,8 @@
   # Alternative experimental factor
   n_cate <- c(10, 7, 5, 3, 2)
   p_cate <- round(seq(.2, 1, length.out = 5), 2)
-  interval <- c(TRUE) #, FALSE)
+  interval <- c(TRUE, FALSE)
+  skewness <- 0
   rho <- seq(0.1, .9, .1)
   blocks <- c(1, 5)
 
@@ -75,6 +77,7 @@
                        D = p_cate, # ordinality degree
                        rho = rho,    # correlation strength
                        blocks = blocks,
+                       skewness = skewness,
                        interval = interval,
                        stringsAsFactors = FALSE)
 
