@@ -19,23 +19,9 @@ runCell <- function(cond,
   # rp = 1
 
 # Data Generation ---------------------------------------------------------
-  
-  # Generate Continuous Data
-  Sigma_blocks <- lapply(1:cond$blocks, function (x){
-    Sigma <- matrix(cond$rho,
-                    nrow = parms$P/cond$blocks,
-                    ncol = parms$P/cond$blocks)
-    diag(Sigma) <- 1
-    Sigma
-  })
-  Sigma <- as.matrix(Matrix::bdiag(Sigma_blocks))
-  mu <- rep(parms$item_mean, parms$P)
-  cpM <- list(mean = mu,
-              var.cov = Sigma,
-              gamma1 = rep(cond$skewness, parms$P))
-  dpM <- cp2dp(cpM, family = "SN")
-  dat_orig <- rmsn(parms$N, dp = dpM)
-    colnames(dat_orig) <- paste0("z", 1:ncol(dat_orig))
+
+  # Generate x
+  dat_orig <- genX(parms, cond)
 
   # Generate a dependent variable
   y <- 5 + as.matrix(dat_orig) %*% rep(1, parms$P) + rnorm(parms$N, 0, 2.5)
