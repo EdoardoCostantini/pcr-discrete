@@ -16,7 +16,10 @@
                  "psych",
                  "stringr",
                  "dplyr",
-                 "sn", # for Multivariate Skewed Distribution
+                 "sn",          # for Multivariate Skewed Distribution
+                 "fungible",    # for Multivariate Skewed Distribution
+                 "testthat",
+                 "moments",     # for skewness
                  "FactoMineR")
 
   lapply(pack_list, library, character.only = TRUE, verbose = FALSE)

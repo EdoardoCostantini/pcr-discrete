@@ -16,12 +16,13 @@ genX <- function (parms, cond){
   })
   Sigma <- as.matrix(Matrix::bdiag(Sigma_blocks))
   mu <- rep(parms$item_mean, parms$P)
-  cpM <- list(mean = mu,
-              var.cov = Sigma,
-              gamma1 = rep(cond$skewness, parms$P))
-  dpM <- cp2dp(cpM, family = "SN")
-  x <- rmsn(parms$N, dp = dpM)
-    colnames(x) <- paste0("z", 1:ncol(x))
+  monte_object <- monte1(seed = NULL,
+                         nsub = parms$N,
+                         nvar = parms$P,
+                         skewvec = rep(cond$skewness, parms$P),
+                         kurtvec = rep(0, parms$P),
+                         cormat = Sigma)
+  x <- data.frame(monte_object$data)
 
   return(x)
 }
