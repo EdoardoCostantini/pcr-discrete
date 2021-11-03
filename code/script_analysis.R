@@ -2,7 +2,7 @@
 ### Project:  Ordinality
 ### Author:   Edoardo Costantini
 ### Created:  2021-06-10
-### Modified: 2021-10-20
+### Modified: 2021-11-03
 
   ## Make sure we have a clean environment:
   rm(list = ls())
@@ -19,13 +19,12 @@
 # Load Results ----------------------------------------------------------
 
   inDir <- "../output/"
-  file_lin <- grep("_lin", list.files(inDir), value = TRUE)
   file_box <- grep("_box", list.files(inDir), value = TRUE)
-  runName <- files[length(files)]
+  file_lin <- grep("_lin", list.files(inDir), value = TRUE)
 
   # Read output
-  gg_shape <- readRDS(paste0(inDir, file_lin))
-  gg_line <- readRDS(paste0(inDir, file_box))
+  gg_shape <- readRDS(paste0(inDir, file_box[2]))
+  gg_line <- readRDS(paste0(inDir, file_lin[2]))
 
   # Support Functions
   source("./init.R")
@@ -38,7 +37,7 @@
   D_conditions <- sort(unique(gg_shape$D))
   int_conditions <- unique(gg_shape$interval)[1]
   rho_conditions <- unique(gg_shape$rho)[7]
-  blocks_conditions <- unique(gg_shape$blocks)[2]
+  blocks_conditions <- unique(gg_shape$blocks)[1]
 
   methods <- paste(
     c("orig", "nume", "poly", "dumm", "disj", "PCAmix"),
@@ -79,7 +78,7 @@
                         "cov blocks: ", blocks_conditions),
          x     = NULL,
          y     = result) +
-    coord_cartesian(ylim = c(0, 25))
+    coord_cartesian(ylim = c(2, 7.5))
 
   plot1
 
@@ -97,72 +96,3 @@
   }
   plot1
   dev.off()
-
-# Produce line plot -------------------------------------------------------
-
-# Inputs
-  dat = gg_line
-  meth_sel = paste0(c("orig", "nume", "poly", "dumm", "disj", "PCAmix"),#[c(4:6)],
-                    collapse = "|")
-  plot_x_axis = "rho"
-  plot_y_axis = "rmses_av"
-  x_axis_name = "Predictors Correlation"
-  y_axis_name = "rmse"
-  moderator = "method"
-  grid_x_axis = "K"
-  grid_y_axis = "D"
-  scales = NULL # or "free"
-  error_bar = FALSE
-  scale_x_cont = FALSE
-  filters = list(blocks = c(5),
-                 D = unique(gg_line$D)[c(2, 4, 5)],
-                 K = c(2, 3, 5, 7))
-
-  # Subset data
-  dat_sub <- dat %>%
-    # filter(grepl(par_est, variable)) %>%
-    filter(grepl(meth_sel, method))
-
-  # Apply extra filters
-  for (f in seq_along(filters)){
-    filter_factor <- names(filters)[f]
-    filter_lvels <- filters[[f]]
-    dat_sub <- dat_sub %>%
-      filter(!!as.symbol(filter_factor) %in% filter_lvels)
-  }
-
-  # Main Plot
-  plot_main <- dat_sub %>%
-    ggplot(aes_string(x = plot_x_axis,
-                      y = plot_y_axis,
-                      group = moderator,
-                      color = moderator)) +
-    geom_line(aes_string(linetype = moderator)) +
-    geom_point(size = 1)
-
-  # Add error bars if wanted
-  if(error_bar == TRUE){
-    plot_main <- plot_main +
-      geom_errorbar(aes(ymin = lwr_avg,
-                        ymax = upr_avg,
-                        group = method),
-                    width = .1)
-  }
-
-  # Grid
-  plot_grid <- plot_main +
-    facet_grid(reformulate(grid_x_axis, grid_y_axis),
-               labeller = label_both,
-               scales = scales)
-
-  # Format
-  plot_themed <- plot_grid +
-    theme(text = element_text(size = 15),
-          plot.title = element_text(hjust = 0.5),
-          axis.text = element_text(size = 15),
-          axis.text.x = element_text(angle = 45, hjust = 0.95),
-          axis.title = element_text(size = 10)) +
-    labs(title = NULL,
-         x     = x_axis_name,
-         y     = paste(y_axis_name))
-  plot_themed
