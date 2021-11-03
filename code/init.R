@@ -2,7 +2,7 @@
 ### Project:  Ordinality
 ### Author:   Edoardo Costantini
 ### Created:  2021-06-10
-### Modified: 2021-10-19
+### Modified: 2021-11-03
 
 # Packages ----------------------------------------------------------------
 
@@ -55,7 +55,7 @@
 
   # Data generation
   parms$N <- 1e3 # sample size
-  parms$P <- 25 # number of variables
+  parms$P <- 10 # number of variables
   parms$item_mean <- 0 # true item mean
   parms$item_var  <- 1 # true item variance
 
@@ -66,12 +66,12 @@
 
   # Parallel Experiments: for the continuous and attenuated relationship
   # Alternative experimental factor
-  n_cate <- c(10, 7, 5, 3, 2)
+  n_cate <- c(7, 5, 3, 2)
   p_cate <- round(seq(.2, 1, length.out = 5), 2)
-  interval <- c(TRUE, FALSE)
-  skewness <- 0
+  interval <- c(TRUE)
+  skewness <- c(0, 1, 2, 3)
   rho <- seq(0.1, .9, .1)
-  blocks <- c(1, 5)
+  blocks <- c(1, 2, 5)
 
   # Make Conditionsa
   conds <- expand.grid(N  = parms$N, # sample size
