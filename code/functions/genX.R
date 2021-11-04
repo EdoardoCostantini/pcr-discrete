@@ -19,10 +19,13 @@ genX <- function (parms, cond){
   monte_object <- monte1(seed = NULL,
                          nsub = parms$N,
                          nvar = parms$P,
-                         skewvec = rep(cond$skewness, parms$P),
-                         kurtvec = rep(0, parms$P),
+                         skewvec = rep(cond$skew, parms$P),
+                         kurtvec = rep(cond$kurt - 3, parms$P),
                          cormat = Sigma)
   x <- data.frame(monte_object$data)
+
+  # Make sure it is scaled right
+  x <- scale(x)
 
   return(x)
 }

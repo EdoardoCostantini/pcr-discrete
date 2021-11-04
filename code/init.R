@@ -70,6 +70,8 @@
   p_cate <- round(seq(.2, 1, length.out = 5), 2)
   interval <- c(TRUE)
   skewness <- c(0, 1, 2, 3)
+  skew_kurt <- data.frame(skew = c(0, 1, 2),
+                          kurt = c(3, 5, 10))
   rho <- seq(0.1, .9, .1)
   blocks <- c(1, 2, 5)
 
@@ -80,9 +82,16 @@
                        D = p_cate, # ordinality degree
                        rho = rho,    # correlation strength
                        blocks = blocks,
-                       skewness = skewness,
+                       skew = skew_kurt$skew,
                        interval = interval,
                        stringsAsFactors = FALSE)
+
+  # Append kurtosis matching skewness
+  conds <- merge(conds, skew_kurt, by = "skew")
+
+  # correct order
+  conds <- conds[, c("N", "P", "K", "D", "rho", "blocks",
+                     "skew", "kurt", "interval")]
 
   # Print
   round(conds, 2)
