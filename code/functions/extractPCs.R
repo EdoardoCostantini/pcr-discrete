@@ -2,7 +2,7 @@
 # Objective: Extract Principal Components with different methods
 # Author:    Edoardo Costantini
 # Created:   2021-10-19
-# Modified:  2021-10-19
+# Modified:  2021-11-11
 
 extractPCs <- function(dt = matrix(), npcs = 1, cor_type = "cor"){
   # Given a data set A in matrix for, it extracts the first npcs principal
@@ -22,6 +22,7 @@ extractPCs <- function(dt = matrix(), npcs = 1, cor_type = "cor"){
   pcr_out <- psych::principal(dt,
                               nfactors = npcs,
                               cor = cor_type,
+                              rotate = "none"
   )
 
   # Compute CPVE
