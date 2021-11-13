@@ -27,5 +27,5 @@ genX <- function (parms, cond){
   # Make sure it is scaled right
   x <- scale(x)
 
-  return(x)
+  return(data.frame(x))
 }
