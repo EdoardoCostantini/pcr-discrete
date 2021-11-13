@@ -2,7 +2,7 @@
 ### Project:  Ordinality
 ### Author:   Edoardo Costantini
 ### Created:  2021-06-10
-### Modified: 2021-10-19
+### Modified: 2021-11-13
 ### Note:     A "cell" is a cycle through the set of conditions.
 ###           The function in this script generates 1 data set, performs 
 ###           imputations for every condition in the set.
@@ -57,19 +57,19 @@ runCell <- function(cond,
 # Analysis ----------------------------------------------------------------
 
   # PCA Original
-  pcs_orig <- extractPCs(dat_orig, npcs = cond$blocks, cor_type = "cor")
+  pcs_orig <- extractPCs(dat_orig, y_cv = y, cor_type = "cor")
 
   # PCA Numerical
-  pcs_nume <- extractPCs(dat_disc, npcs = cond$blocks, cor_type = "cor")
+  pcs_nume <- extractPCs(dat_disc, y_cv = y, cor_type = "cor")
 
   # PCA Polychoric
-  pcs_poly <- extractPCs(dat_disc, npcs = cond$blocks, cor_type = "mixed")
+  pcs_poly <- extractPCs(dat_disc, y_cv = y, cor_type = "mixed")
 
   # PCA Disjunction table
-  pcs_disj <- extractPCs(dat_disj, npcs = cond$blocks, cor_type = "cor")
+  pcs_disj <- extractPCs(dat_disj, y_cv = y, cor_type = "cor")
 
   # PCA Dummy
-  pcs_dumm <- extractPCs(dat_dumm, npcs = cond$blocks, cor_type = "cor")
+  pcs_dumm <- extractPCs(dat_dumm, y_cv = y, cor_type = "cor")
 
   # PCAmix
   dat_disc_quanti <- dat_disc[, index_cont]
@@ -78,20 +78,17 @@ runCell <- function(cond,
   if(ncol(dat_disc_quanti) == 0){
     pcamix <- PCAmix(X.quali = dat_disc_quali,
                      rename.level = TRUE,
-                     ndim = ncol(dat_disc), graph = FALSE)
+                     ndim = ncol(dat_dumm), graph = FALSE)
   }
   if(ncol(dat_disc_quanti) != 0){
     pcamix <- PCAmix(X.quanti = dat_disc_quanti,
                      X.quali = dat_disc_quali,
                      rename.level = TRUE,
-                     ndim = ncol(dat_disc), graph = FALSE)
+                     ndim = ncol(dat_dumm), graph = FALSE)
   }
-  pcamix_dat <- pcamix$ind$coord[, 1:cond$blocks, drop = FALSE]
-  var_exp <- apply(pcamix$ind$coord, 2, var) # same
-  var_tot <- sum(var_exp)
-  pcamix_r2 <- unname( # cumulative variance explained
-    round(cumsum(var_exp)/var_tot, 3)[1:parms$npcs]
-  )
+  pcamixn_pcs <- pcCV(y = y, X = pcamix$ind$coord, K = 10)
+  pcamix_dat <- pcamix$ind$coord[, 1:pcamixn_pcs, drop = FALSE]
+  pcamix_r2 <- round(pcamix$eig[pcamixn_pcs, "Cumulative"], 3)
 
   # Append results
   pcs_list <- list(
@@ -101,7 +98,8 @@ runCell <- function(cond,
     disj = pcs_disj,
     dumm = pcs_dumm,
     PCAmix = list(dat = pcamix_dat,
-                  r2 = pcamix_r2)
+                  r2 = pcamix_r2,
+                  npcs = pcamixn_pcs)
   )
   dts_pcs <- lapply(pcs_list, "[[", "dat")
 
