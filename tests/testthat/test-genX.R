@@ -14,7 +14,6 @@ reps <- 30
 set.seed(20211104)
 
 for (i in 1:nrow(conds_test)){
-  print(i)
   skewness <- rep(NA, reps)
   kurtosis <- rep(NA, reps)
   correlation <- rep(NA, reps)
