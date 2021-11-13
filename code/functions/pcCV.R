@@ -2,18 +2,29 @@
 # Objective: Function to cross-validate the number of components
 # Author:    Edoardo Costantini
 # Created:   2021-11-12
-# Modified:  2021-11-12
+# Modified:  2021-11-13
 
-#' Parms
-#' @Y: a vector containing a dependent variable used to compute the cve
-#' @X: a matrix containing the scores on all the PCs obtained on some
+pcCV <- function(y, X, K = 10){
+#' @title Principal Components cross-validation
+#'
+#' @description Performs the cross-validation to select the number of componets
+#' to retain
+#'
+#' Given a dv, a set of componets extrscted from an original set of predictors,
+#' and a number of forlds, this function obtains the cross-validation error (CVE)
+#' for the linear models predicting the dv with an increasing number of comp
+#' oents.
+#'
+#' The function returns a vector of length 1 with the number of components that
+#' returns the lowest CVE.
+#'
+#' @param y: a vector containing a dependent variable used to compute the cve
+#' @param X: a matrix containing the scores on all the PCs obtained on some
 #'      set of predictors.
 #' @examples
 #' Z <- MASS::mvrnorm(n = 1e3, rep(0, 10), diag(10))
 #' y <- Z %*% rep(1, 10) + rnorm(1e3)
 #' X <- prcomp(Z)$x
-
-pcCV <- function(y, X, K = 10){
 
   # Define useful objects
   tot_npcs <- ncol(X)
