@@ -88,7 +88,7 @@ runCell <- function(cond,
   }
   pcamixn_pcs <- pcCV(y = y, X = pcamix$ind$coord, K = 10)
   pcamix_dat <- pcamix$ind$coord[, 1:pcamixn_pcs, drop = FALSE]
-  pcamix_r2 <- round(pcamix$eig[pcamixn_pcs, "Cumulative"], 3)
+  pcamix_r2 <- round(pcamix$eig[pcamixn_pcs, "Cumulative"], 3)/100
 
   # Append results
   pcs_list <- list(
