@@ -2,9 +2,9 @@
 # Objective: Plot the performance of methods against correlation among vars
 # Author:    Edoardo Costantini
 # Created:   2021-11-03
-# Modified:  2021-11-03
+# Modified:  2021-11-17
 
-rm(list = ls())
+  rm(list = ls())
 
 # Packages ----------------------------------------------------------------
 
@@ -21,7 +21,7 @@ rm(list = ls())
   file_lin <- grep("_lin", list.files(inDir), value = TRUE)
 
   # Read output
-  gg_line <- readRDS(paste0(inDir, file_lin[2]))
+  gg_line <- readRDS(paste0(inDir, file_lin[3]))
 
   # Support Functions
   source("./init.R")
@@ -44,9 +44,9 @@ rm(list = ls())
                  D        = unique(gg_line$D)[c(5)],
                  rho      = unique(gg_line$rho),
                  blocks   = unique(gg_line$blocks),
-                 skewness = unique(gg_line$skewness)[1],
+                 skew     = unique(gg_line$skew)[1],
                  interval = unique(gg_line$interval),
-                 method   = unique(gg_line$method)#[c(1, 2, 5)]
+                 method   = unique(gg_line$method)[1:5]#[c(1, 2, 5)]
                  )
 
   # Subset data
@@ -61,10 +61,10 @@ rm(list = ls())
   plot_main <- dat %>%
     ggplot(aes_string(x = plot_x_axis,
                       y = plot_y_axis,
-                      group = moderator,
-                      color = moderator)) +
-    geom_line(aes_string(linetype = moderator)) +
-    geom_point(size = 0)
+                      group = moderator)) +
+    geom_line(aes_string(linetype = moderator), size = 1) +
+    geom_point(size = 0) +
+    scale_linetype_manual(values=c("solid", "longdash", "dashed", "dotdash", "dotted"))
 
   # Add error bars if wanted
   if(error_bar == TRUE){

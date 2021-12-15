@@ -2,7 +2,7 @@
 # Objective: Plot the performance of methods as skewness varies
 # Author:    Edoardo Costantini
 # Created:   2021-11-03
-# Modified:  2021-11-03
+# Modified:  2021-11-17
 
   ## Make sure we have a clean environment:
   rm(list = ls())
@@ -34,10 +34,10 @@
 # Inputs
   dat = gg_line
   plot_x_axis = "method"
-  plot_y_axis = "rmses_av"
+  plot_y_axis = "rmses_md"
   x_axis_name = "Skewness"
   y_axis_name = "rmse"
-  moderator = "skewness"
+  moderator = "skew"
   grid_x_axis = "K"
   grid_y_axis = "blocks"
   scales = NULL # or "free"
@@ -47,7 +47,7 @@
                  D        = unique(gg_line$D)[c(5)],
                  rho      = unique(gg_line$rho)[c(7)],
                  blocks   = unique(gg_line$blocks),
-                 skewness = unique(gg_line$skewness),
+                 skew     = unique(gg_line$skew),
                  interval = unique(gg_line$interval),
                  method   = unique(gg_line$method)
                  )
@@ -92,6 +92,7 @@
                                " = ",
                                filters, collapse = "; ")),
          x     = x_axis_name,
-         y     = paste(y_axis_name))
+         y     = paste(y_axis_name)) +
+    coord_cartesian(ylim = c(0, 15))
   plot_themed
 
