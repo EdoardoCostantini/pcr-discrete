@@ -14,7 +14,7 @@
 
   inDir <- "../output/"
   files <- grep("tar", list.files(inDir), value = TRUE)
-  target_tar <- files[8]
+  target_tar <- files[9]
   output <- readTarGz(target_tar)
 
 # Restructure Results -----------------------------------------------------
@@ -35,7 +35,7 @@
   )
 
   # Read
-  file_name <- grep("out", list.files(inDir), value = TRUE)[1]
+  file_name <- grep("out", list.files(inDir), value = TRUE)[2]
   run_name <- gsub("_out.rds", "", file_name)
   out <- readRDS(paste0("../output/", file_name))
 
@@ -106,7 +106,7 @@
   # Save
   saveRDS(results,
           file = paste0("../output/",
-                        run_name,
+                        output$name_run,
                         "_lin",
                         ".rds")
   )

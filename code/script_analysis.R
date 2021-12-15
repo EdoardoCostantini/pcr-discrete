@@ -23,21 +23,22 @@
   file_lin <- grep("_lin", list.files(inDir), value = TRUE)
 
   # Read output
-  gg_shape <- readRDS(paste0(inDir, file_box[2]))
-  gg_line <- readRDS(paste0(inDir, file_lin[2]))
+  gg_shape <- readRDS(paste0(inDir, file_box[3]))
+  gg_line <- readRDS(paste0(inDir, file_lin[3]))
 
   # Support Functions
   source("./init.R")
 
 # Plots -------------------------------------------------------------------
 
-  result <- c("mses.", "r2.", "cors.")[1]
+  result <- c("mses.", "r2.", "cors.")[2]
 
   K_conditions <- rev(sort(unique(gg_shape$K)))
   D_conditions <- sort(unique(gg_shape$D))
   int_conditions <- unique(gg_shape$interval)[1]
-  rho_conditions <- unique(gg_shape$rho)[7]
-  blocks_conditions <- unique(gg_shape$blocks)[1]
+  rho_conditions <- unique(gg_shape$rho)[1]
+  blocks_conditions <- unique(gg_shape$blocks)[3]
+  skew_conditions <- unique(gg_shape$skew)[1]
 
   methods <- paste(
     c("orig", "nume", "poly", "dumm", "disj", "PCAmix"),
@@ -52,6 +53,7 @@
     filter(interval %in% int_conditions) %>%
     filter(blocks %in% blocks_conditions) %>%
     filter(rho %in% rho_conditions) %>%
+    filter(skew %in% skew_conditions) %>%
     # Obtain Root MSE
     mutate(rmse = sqrt(value)) %>%
     # Change labels of X axis
@@ -78,7 +80,7 @@
                         "cov blocks: ", blocks_conditions),
          x     = NULL,
          y     = result) +
-    coord_cartesian(ylim = c(2, 7.5))
+    coord_cartesian(ylim = c(0, 1))
 
   plot1
 
