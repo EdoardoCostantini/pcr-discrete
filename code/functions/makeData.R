@@ -1,5 +1,5 @@
 # Project:   pcr_discrete
-# Objective: Generate data based on a given PC structure
+# Objective: Generate data based on a given PC structure (version bypassing T)
 # Author:    Edoardo Costantini
 # Created:   2022-01-05
 # Modified:  2022-01-05

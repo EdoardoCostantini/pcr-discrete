@@ -27,9 +27,11 @@ runCell <- function(cond,
                          decreasing = TRUE))
 
   # Generate data
-  makeDat_out <- makeDat(n = parms$N,
-                         variances = target_eigen)
-  dat_orig <- makeDat_out$X
+  dat_objs <- generatePCdat(N = parms$N,
+                            J = parms$P,
+                            Q = parms$K,
+                            p = 0.4)
+  dat_orig <- dat_objs$X
 
   # Generate a dependent variable
   y <- 5 + as.matrix(dat_orig) %*% rep(1, parms$P) + rnorm(parms$N, 0, 2.5)
