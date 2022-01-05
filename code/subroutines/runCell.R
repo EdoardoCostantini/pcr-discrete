@@ -34,7 +34,13 @@ runCell <- function(cond,
   dat_orig <- dat_objs$X
 
   # Generate a dependent variable
-  y <- 5 + as.matrix(dat_orig) %*% rep(1, parms$P) + rnorm(parms$N, 0, 2.5)
+  y <- dat_objs$T %*% rep(1, parms$K)
+  R2 <- .90
+  SStot <- sum((y - mean(y))^2)
+  SSres <- SStot * (1 - R2)
+  evar <- SSres / (parms$N-1)
+  e <- rnorm(parms$N, 0, sqrt(evar))
+  y <- y + e
 
   # Discretise
   n_var_cate <- parms$P * cond$D # number of categorical variables
