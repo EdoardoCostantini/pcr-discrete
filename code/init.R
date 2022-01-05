@@ -2,7 +2,7 @@
 ### Project:  Ordinality
 ### Author:   Edoardo Costantini
 ### Created:  2021-06-10
-### Modified: 2021-11-03
+### Modified: 2022-01-05
 
 # Packages ----------------------------------------------------------------
 
@@ -55,12 +55,10 @@
 
   # Data generation
   parms$N <- 1e3 # sample size
-  parms$P <- 10 # number of variables
+  parms$K <- 3   # true number of principal components
+  parms$P <- 10  # number of variables
   parms$item_mean <- 0 # true item mean
   parms$item_var  <- 1 # true item variance
-
-  # Analysis
-  parms$npcs <- 1
 
 # Experimental Conditions -------------------------------------------------
 
@@ -69,29 +67,17 @@
   n_cate <- c(7, 5, 3, 2)
   p_cate <- round(seq(.2, 1, length.out = 5), 2)
   interval <- c(TRUE)
-  skewness <- c(0, 1, 2, 3)
-  skew_kurt <- data.frame(skew = c(0, 1, 2),
-                          kurt = c(3, 5, 10))
-  rho <- seq(0.1, .9, .1)
-  blocks <- c(1, 2, 5)
 
   # Make Conditionsa
   conds <- expand.grid(N  = parms$N, # sample size
                        P  = parms$P, # number of total variables
                        K = n_cate, # number of categories
                        D = p_cate, # ordinality degree
-                       rho = rho,    # correlation strength
-                       blocks = blocks,
-                       skew = skew_kurt$skew,
                        interval = interval,
                        stringsAsFactors = FALSE)
 
-  # Append kurtosis matching skewness
-  conds <- merge(conds, skew_kurt, by = "skew")
-
   # correct order
-  conds <- conds[, c("N", "P", "K", "D", "rho", "blocks",
-                     "skew", "kurt", "interval")]
+  conds <- conds[, c("N", "P", "K", "D", "interval")]
 
   # Print
   round(conds, 2)

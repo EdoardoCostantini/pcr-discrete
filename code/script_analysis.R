@@ -2,7 +2,7 @@
 ### Project:  Ordinality
 ### Author:   Edoardo Costantini
 ### Created:  2021-06-10
-### Modified: 2021-11-03
+### Modified: 2022-01-05
 
   ## Make sure we have a clean environment:
   rm(list = ls())
@@ -36,9 +36,6 @@
   K_conditions <- rev(sort(unique(gg_shape$K)))
   D_conditions <- sort(unique(gg_shape$D))
   int_conditions <- unique(gg_shape$interval)[1]
-  rho_conditions <- unique(gg_shape$rho)[1]
-  blocks_conditions <- unique(gg_shape$blocks)[3]
-  skew_conditions <- unique(gg_shape$skew)[1]
 
   methods <- paste(
     c("orig", "nume", "poly", "dumm", "disj", "PCAmix"),
@@ -51,9 +48,6 @@
     filter(D %in% D_conditions) %>%
     filter(K %in% K_conditions) %>%
     filter(interval %in% int_conditions) %>%
-    filter(blocks %in% blocks_conditions) %>%
-    filter(rho %in% rho_conditions) %>%
-    filter(skew %in% skew_conditions) %>%
     # Obtain Root MSE
     mutate(rmse = sqrt(value)) %>%
     # Change labels of X axis
@@ -75,9 +69,7 @@
           axis.text = element_text(size = 15),
           axis.text.x = element_text(angle = 45, hjust = 0.95),
           axis.title = element_text(size = 15)) +
-    labs(title = paste0("interval: ", int_conditions, "; ",
-                        "cor level: ", rho_conditions, "; ",
-                        "cov blocks: ", blocks_conditions),
+    labs(title = paste0("interval: ", int_conditions),
          x     = NULL,
          y     = result) +
     coord_cartesian(ylim = c(0, 1))

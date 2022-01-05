@@ -2,7 +2,7 @@
 ### Project:  Ordinality
 ### Author:   Edoardo Costantini
 ### Created:  2021-06-10
-### Modified: 2021-11-13
+### Modified: 2022-01-05
 ### Note:     A "cell" is a cycle through the set of conditions.
 ###           The function in this script generates 1 data set, performs 
 ###           imputations for every condition in the set.
@@ -20,8 +20,16 @@ runCell <- function(cond,
 
 # Data Generation ---------------------------------------------------------
 
-  # Generate x
-  dat_orig <- genX(parms, cond)
+  # Define target eigen values
+  target_eigen <- c(seq(10, 5, length.out = parms$K),
+                    sort(runif(parms$P - parms$K,
+                               min = 0.01, max = 0.5),
+                         decreasing = TRUE))
+
+  # Generate data
+  makeDat_out <- makeDat(n = parms$N,
+                         variances = target_eigen)
+  dat_orig <- makeDat_out$X
 
   # Generate a dependent variable
   y <- 5 + as.matrix(dat_orig) %*% rep(1, parms$P) + rnorm(parms$N, 0, 2.5)
