@@ -2,7 +2,7 @@
 ### Project:  Ordinality
 ### Author:   Edoardo Costantini
 ### Created:  2021-06-10
-### Modified: 2022-01-05
+### Modified: 2022-01-12
 ### Note:     A "cell" is a cycle through the set of conditions.
 ###           The function in this script generates 1 data set, performs 
 ###           imputations for every condition in the set.
@@ -20,12 +20,6 @@ runCell <- function(cond,
 
 # Data Generation ---------------------------------------------------------
 
-  # Define target eigen values
-  target_eigen <- c(seq(10, 5, length.out = parms$K),
-                    sort(runif(parms$P - parms$K,
-                               min = 0.01, max = 0.5),
-                         decreasing = TRUE))
-
   # Generate data
   dat_objs <- generatePCdat(N = parms$N,
                             J = parms$P,
@@ -33,14 +27,16 @@ runCell <- function(cond,
                             p = 0.4)
   dat_orig <- dat_objs$X
 
-  # Generate a dependent variable
-  y <- dat_objs$T %*% rep(1, parms$K)
-  R2 <- .90
-  SStot <- sum((y - mean(y))^2)
-  SSres <- SStot * (1 - R2)
-  evar <- SSres / (parms$N-1)
+  # Generate a dependent variable on true line
+  y_true <- dat_objs$T %*% rep(1, parms$K)
+
+  # Define explained variance by the model
+  R2 <- .50
+
+  # Generate and add errors
+  evar <- var(y_true) / R2 - var(y_true)
   e <- rnorm(parms$N, 0, sqrt(evar))
-  y <- y + e
+  y <- y_true + e
 
   # Discretise
   n_var_cate <- parms$P * cond$D # number of categorical variables
