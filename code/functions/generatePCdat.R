@@ -2,7 +2,7 @@
 # Objective: Generate data based on a given PC structure (version giving T)
 # Author:    Edoardo Costantini
 # Created:   2022-01-05
-# Modified:  2022-01-05
+# Modified:  2022-01-12
 # Source:    https://github.com/trbKnl/SCaDS/blob/master/Simulation_study_4.1/generateData.R
 
 #' generatePCdat: creates simulated data based on a PCA model
@@ -17,13 +17,12 @@
 #' @example
 # out <- generatePCdat(J = 10,
 #                      N = 1e3,
-#                      Q = 1,
-#                      p = 0.4)
-#
+#                      Q = 5,
+#                      p = 0.1)
 # egn <- eigen(cov(out$X))$values
 # round(egn, 3)
-#
 # prop.table(egn)
+# cumsum(prop.table(egn))
 
 generatePCdat <- function(N, J, Q, p){
 
@@ -32,13 +31,13 @@ generatePCdat <- function(N, J, Q, p){
                   nrow = N,
                   ncol = J)
   V     <- svd(X)$v
-  W     <- V[, 1:Q]
-  T     <- X %*% W
+  W     <- V[, 1:Q] # J x Q component weight matrix
+  T     <- X %*% W  # N x Q component scores matrix as linear combination of X
 
   # Generating P
   XTX   <- t(X) %*% X
   SVD   <- svd(XTX %*% W)
-  P     <- SVD$u %*% t(SVD$v)
+  P     <- SVD$u %*% t(SVD$v) # J x Q loading matrix
 
   # Generating X = TP'
   X     <- T %*% t(P)
