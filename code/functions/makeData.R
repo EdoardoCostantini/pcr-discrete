@@ -2,7 +2,7 @@
 # Objective: Generate data based on a given PC structure (version bypassing T)
 # Author:    Edoardo Costantini
 # Created:   2022-01-05
-# Modified:  2022-01-05
+# Modified:  2022-01-12
 # Notes:     Heavily inspired by https://github.com/trbKnl/sparseWeightBasedPCA/blob/master/R/makeData.R
 
 # Divide the columns of matrix by 2norm
@@ -72,7 +72,7 @@ makeP <- function(A){
 #' set.seed(20220105)
 #' K <- 3 # number of components
 #' J <- 9 # number of indicators
-#' vars <- c(seq(10, 5, length.out = K), sort(runif(J, min = 0.01, max = 0.5), decreasing = TRUE))
+#' vars <- c(seq(10, 5, length.out = K), sort(runif(J-K, min = 0.01, max = 0.5), decreasing = TRUE))
 #'
 #' dat   <- makeDat(n = 1e4, variances = vars)
 #'
@@ -80,15 +80,16 @@ makeP <- function(A){
 makeDat <- function(n, variances){
   # Generate a random loading matrix P
   J <- length(variances)
-  P <- matrix(data = rnorm(J * J),
+  Q <- sum(variances >= 1)
+  P <- matrix(data = rnorm(J * Q),
               nrow = J,
-              ncol = J)
+              ncol = Q)
 
   # Orthogonalize P (so that P'P = I)
   P <- makeP(P)$A
 
   # Generate X
-  Sigma <- P %*% diag(variances) %*% t(P)
+  Sigma <- P %*% diag(variances[1:Q]) %*% t(P)
   X     <- MASS::mvrnorm(n     = n,
                          mu    = rep(0, J),
                          Sigma = Sigma)
