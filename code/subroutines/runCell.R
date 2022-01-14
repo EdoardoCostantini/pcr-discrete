@@ -1,11 +1,10 @@
-### Title:    Subroutine runCell
-### Project:  Ordinality
-### Author:   Edoardo Costantini
-### Created:  2021-06-10
-### Modified: 2022-01-12
-### Note:     A "cell" is a cycle through the set of conditions.
-###           The function in this script generates 1 data set, performs 
-###           imputations for every condition in the set.
+# Project:  pcr_discrete
+# Author:   Edoardo Costantini
+# Created:  2021-06-10
+# Modified: 2022-01-14
+# Note:     A "cell" is a cycle through the set of conditions.
+#           The function in this script generates 1 data set, performs
+#           imputations for every condition in the set.
 
 runCell <- function(cond,
                     parms,
@@ -21,32 +20,33 @@ runCell <- function(cond,
 # Data Generation ---------------------------------------------------------
 
   # Generate data
-  dat_objs <- generatePCdat(N = parms$N,
-                            J = parms$P,
-                            Q = parms$K,
-                            p = 0.4)
-  dat_orig <- dat_objs$X
+  XTP <- generateXTP(I = parms$N,
+                     J = parms$P,
+                     R = parms$K,
+                     CPVE = 0.9)
+  dat_orig <- XTP$X
 
   # Generate a dependent variable on true line
-  y_true <- dat_objs$T %*% rep(1, parms$K)
+  y <- generateDV(X = XTP$T,
+                  R2 = 0.90,
+                  beta = 1)
 
-  # Define explained variance by the model
-  R2 <- .50
+  # Define the number of categorical variables for this condition
+  n_var_cate <- parms$P * cond$D
 
-  # Generate and add errors
-  evar <- var(y_true) / R2 - var(y_true)
-  e <- rnorm(parms$N, 0, sqrt(evar))
-  y <- y_true + e
+  # Define an index for the discrete variables
+  index_disc <- tail(1:parms$P, n_var_cate)
 
-  # Discretise
-  n_var_cate <- parms$P * cond$D # number of categorical variables
-  index_disc <- tail(1:parms$P, n_var_cate) # Discrete variables
-  index_cont <- which(!(1:parms$P %in% index_disc)) # Continuous variables
+  # Define an index for the continuous variables
+  index_cont <- which(!(1:parms$P %in% index_disc))
+
+  # Discretize variables based on these indexes
   col_disc <- lapply(dat_orig[, index_disc],
                      disData,
                      K = cond$K,
                      interval = cond$interval)
 
+  # Combine the discretized variables with the ones that stayed continuous
   dat_disc <- cbind(dat_orig[, index_cont, drop = FALSE],
                     col_disc)
 
