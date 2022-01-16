@@ -1,8 +1,8 @@
-### Title:    Defining Fixed Parameters
-### Project:  Ordinality
-### Author:   Edoardo Costantini
-### Created:  2021-06-10
-### Modified: 2022-01-05
+# Title:    Defining Fixed Parameters
+# Project:  Ordinality
+# Author:   Edoardo Costantini
+# Created:  2021-06-10
+# Modified: 2022-01-16
 
 # Packages ----------------------------------------------------------------
 
@@ -66,6 +66,7 @@
   # Alternative experimental factor
   n_cate <- c(7, 5, 3, 2)
   p_cate <- round(seq(.2, 1, length.out = 5), 2)
+  npcs   <- as.integer(1:parms$P)
   interval <- c(TRUE)
 
   # Make Conditionsa
@@ -73,11 +74,12 @@
                        P  = parms$P, # number of total variables
                        K = n_cate, # number of categories
                        D = p_cate, # ordinality degree
+                       npcs = npcs,
                        interval = interval,
                        stringsAsFactors = FALSE)
 
   # correct order
-  conds <- conds[, c("N", "P", "K", "D", "interval")]
+  conds <- conds[, c("N", "P", "K", "D", "npcs", "interval")]
 
   # Print
   round(conds, 2)

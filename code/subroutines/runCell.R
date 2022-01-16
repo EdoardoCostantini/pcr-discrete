@@ -1,7 +1,7 @@
 # Project:  pcr_discrete
 # Author:   Edoardo Costantini
 # Created:  2021-06-10
-# Modified: 2022-01-14
+# Modified: 2022-01-16
 # Note:     A "cell" is a cycle through the set of conditions.
 #           The function in this script generates 1 data set, performs
 #           imputations for every condition in the set.
@@ -69,38 +69,24 @@ runCell <- function(cond,
 # Analysis ----------------------------------------------------------------
 
   # PCA Original
-  pcs_orig <- extractPCs(dat_orig, y_cv = y, cor_type = "cor")
+  pcs_orig <- extractPCs(dat_orig, keep = cond$npcs)
 
   # PCA Numerical
-  pcs_nume <- extractPCs(dat_disc, y_cv = y, cor_type = "cor")
-
-  # PCA Polychoric
-  pcs_poly <- extractPCs(dat_disc, y_cv = y, cor_type = "mixed")
+  pcs_nume <- extractPCs(dat_disc, keep = cond$npcs)
 
   # PCA Disjunction table
-  pcs_disj <- extractPCs(dat_disj, y_cv = y, cor_type = "cor")
+  pcs_disj <- extractPCs(dat_disj, keep = cond$npcs)
 
   # PCA Dummy
-  pcs_dumm <- extractPCs(dat_dumm, y_cv = y, cor_type = "cor")
+  pcs_dumm <- extractPCs(dat_dumm, keep = cond$npcs)
+
+  # PCA Polychoric
+  pcs_poly <- extractPCsMixed(dat_disc, keep = cond$npcs)
 
   # PCAmix
-  dat_disc_quanti <- dat_disc[, index_cont]
-  dat_disc_quali <- dat_disc[, index_disc]
-    dat_disc_quali <- as.data.frame(lapply(dat_disc_quali, factor))
-  if(ncol(dat_disc_quanti) == 0){
-    pcamix <- PCAmix(X.quali = dat_disc_quali,
-                     rename.level = TRUE,
-                     ndim = ncol(dat_dumm), graph = FALSE)
-  }
-  if(ncol(dat_disc_quanti) != 0){
-    pcamix <- PCAmix(X.quanti = dat_disc_quanti,
-                     X.quali = dat_disc_quali,
-                     rename.level = TRUE,
-                     ndim = ncol(dat_dumm), graph = FALSE)
-  }
-  pcamixn_pcs <- pcCV(y = y, X = pcamix$ind$coord, K = 10)
-  pcamix_dat <- pcamix$ind$coord[, 1:pcamixn_pcs, drop = FALSE]
-  pcamix_r2 <- round(pcamix$eig[pcamixn_pcs, "Cumulative"], 3)/100
+  pcs_PCAmix <- extractPCAmix(dat_disc, keep = cond$npcs,
+                              index_cont = index_cont,
+                              index_disc = index_disc)
 
   # Append results
   pcs_list <- list(
@@ -109,13 +95,16 @@ runCell <- function(cond,
     poly = pcs_poly,
     disj = pcs_disj,
     dumm = pcs_dumm,
-    PCAmix = list(dat = pcamix_dat,
-                  r2 = pcamix_r2,
-                  npcs = pcamixn_pcs)
+    PCAmix = pcs_PCAmix
   )
-  dts_pcs <- lapply(pcs_list, "[[", "dat")
 
-  # Number of PCs extracted
+  # Extract datasets of PC predictors
+  dts_pcs <- lapply(pcs_list, "[[", "T")
+
+  # Extract number of PCs extracted
+  npcs <- lapply(pcs_list, "[[", "npcs")
+
+  # Extract CPVE by the npcs
   r2 <- lapply(pcs_list, "[[", "r2")
 
   # Cor with dv
@@ -129,7 +118,7 @@ runCell <- function(cond,
 # Store Output ------------------------------------------------------------
 
   ## Define storing object
-  output <- cbind(cond, r2 = r2, cors = cors, mses = mses)
+  output <- cbind(cond, npcs = npcs, r2 = r2, cors = cors, mses = mses)
 
   ## Return it
   saveRDS(output,
