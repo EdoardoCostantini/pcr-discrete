@@ -67,6 +67,7 @@
   n_cate <- c(7, 5, 3, 2)
   p_cate <- round(seq(.2, 1, length.out = 5), 2)
   npcs   <- as.integer(1:parms$P)
+  # npcs   <- c(.8, .9, .95)
   interval <- c(TRUE)
 
   # Make Conditionsa

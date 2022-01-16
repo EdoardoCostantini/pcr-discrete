@@ -8,7 +8,7 @@ extractPCAmix <- function(dt = matrix(), keep = 1L, index_cont, index_disc) {
 # Internals ---------------------------------------------------------------
 
   # dt = dat_disc # MASS::mvrnorm(1e2, rep(0, 10), diag(10))
-  # keep = 1 # either and integer specifying the number of components or a
+  # keep = .9 # either and integer specifying the number of components or a
   #           # double specifying the proportion of variance explained that
   #           # should be kept
   # index_cont = c(1:2)
@@ -21,17 +21,22 @@ extractPCAmix <- function(dt = matrix(), keep = 1L, index_cont, index_disc) {
     lapply(dt[, index_disc], factor)
   )
 
+  # Compute the max number of dimensions
+  nVcat <- ncol(dt_quali)
+  nLvls <- nlevels(dt_quali[, 1])
+  maxdim <- (nLvls - 1) * nVcat + ncol(dt_quanti)
+
   # Extract components
   if(ncol(dt_quanti) == 0){
     pcamix <- PCAmix(X.quali = dt_quali,
                      rename.level = TRUE,
-                     ndim = ncol(dat_dumm), graph = FALSE)
+                     ndim = maxdim, graph = FALSE)
   }
   if(ncol(dt_quanti) != 0){
     pcamix <- PCAmix(X.quanti = dt_quanti,
                      X.quali = dt_quali,
                      rename.level = TRUE,
-                     ndim = ncol(dt), graph = FALSE)
+                     ndim = maxdim, graph = FALSE)
   }
 
   # Store the PC scores
@@ -52,7 +57,7 @@ extractPCAmix <- function(dt = matrix(), keep = 1L, index_cont, index_disc) {
     npcs <- keep
 
     # Compute CPVE
-    r2 <- pcamix$eig[1:npcs, "Cumulative"]/100
+    r2 <- pcamix$eig[npcs, "Cumulative"]/100
   }
 
   # Store
