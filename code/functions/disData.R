@@ -2,7 +2,7 @@
 # Objective: Function to discretize all the columns of dataset
 # Author:    Edoardo Costantini
 # Created:   2021-10-19
-# Modified:  2021-10-19
+# Modified:  2022-01-21
 
 disData <- function(x, K, interval = TRUE){
   # Given a continuous varible x, and a number of categories K,
@@ -11,31 +11,40 @@ disData <- function(x, K, interval = TRUE){
 
   ## Example inputs
   # x = rnorm(1e3)
-  # K = 3
+  # K = 2
   # interval = TRUE
 
   if (interval == TRUE){
     x_dis <- as.numeric(cut(x, K))
   } else {
+    # Define a starting probability for the first bin
+    prob_in <- .4 # first bin probability
+
+    # Define a reduction probability for subsequent bins
     prob_reduction <- .6 # every subsequent bin contains .6 of the remaining obs
-    prob_in <- .2 # first bin probability
+
+    # Define an empty vector to store the probabilities of being in a bin
     probs <- rep(NA, K)
 
+    # Compute the probabilities
     for(k in 1:K){
       if(k < K){
         probs[k] <- prob_in
-        whats_left <- (1-sum(probs, na.rm = TRUE))
-        prob_in <- whats_left*prob_reduction
+        whats_left <- (1 - sum(probs, na.rm = TRUE))
+        prob_in <- whats_left * prob_reduction
       } else {
         probs[k] <- whats_left
       }
     }
-    x_sort <- sort(x)
-    x_mem <- sort(sample(1:K, length(x), probs, replace = TRUE))
-    map <- data.frame(value = as.character(x_sort),
-                      bin = x_mem)
-    target <- as.character(x)
-    x_dis <- map[match(target, map$value), "bin"]
+
+    # Define the break points for the desired bins
+    breaks <- cumsum(c(0, probs))
+
+    # Obtain the cdf values for the given x
+    cdf_x <- pnorm(x, mean = mean(x), sd = sd(x))
+
+    # Cut the cdf_x with the breaks
+    x_dis <- as.numeric(cut(cdf_x, breaks))
   }
   return(x_dis)
 }

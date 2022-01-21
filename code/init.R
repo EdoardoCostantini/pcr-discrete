@@ -77,7 +77,7 @@
             parms$P)                # least summary
 
   # Discretization happens with equal intervals or not
-  interval <- c(TRUE) #, FALSE)
+  interval <- c(TRUE, FALSE)
 
   # Make Conditionsa
   conds <- expand.grid(K = n_cate, # number of categories
