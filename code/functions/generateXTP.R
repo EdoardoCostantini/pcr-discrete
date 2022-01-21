@@ -2,19 +2,23 @@
 # Objective: Generate data based on a given PC structure (version giving T)
 # Author:    Edoardo Costantini
 # Created:   2022-01-05
-# Modified:  2022-01-14
+# Modified:  2022-01-21
 # Source:    https://github.com/trbKnl/SCaDS/blob/master/Simulation_study_4.1/generateData.R
 #            https://github.com/soogs/SCD-CovR/blob/master/functions/spcovrdata.R
 
-generateXTP <- function(I, J, R, CPVE = .9){
+generateXTP <- function(I, J, VAFr = c(.5, .4, .2), VAFsum = 100, CPVE = 0.9){
 # Internals -------------------------------------------------------------
 
   # I    = 100 # sample size
   # J    = 9 # number of variables
-  # R    = 3 # number of important components
+  # VAFr = c(.5, .3, .2) # relative variance of each components
+  # VAFsum = 100 # total variance of the components
   # CPVE = 0.9 # proportion of explained variance by the R components
 
 # Body ------------------------------------------------------------------
+  # Number of components
+  R <- length(VAFr)
+
   # Random sample U
   U <- matrix(
     data = rnorm(I * R),
@@ -35,7 +39,7 @@ generateXTP <- function(I, J, R, CPVE = .9){
   P <- normmat(V)
 
   # Define D
-  D <- diag(100 * c(0.5, 0.4, 0.1))
+  D <- diag(c(VAFsum * VAFr))
 
   # Create X
   Xtrue  <- U %*% D %*% t(P)

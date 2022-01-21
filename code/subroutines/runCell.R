@@ -1,7 +1,7 @@
 # Project:  pcr_discrete
 # Author:   Edoardo Costantini
 # Created:  2021-06-10
-# Modified: 2022-01-16
+# Modified: 2022-01-21
 # Note:     A "cell" is a cycle through the set of conditions.
 #           The function in this script generates 1 data set, performs
 #           imputations for every condition in the set.
@@ -22,14 +22,15 @@ runCell <- function(cond,
   # Generate data
   XTP <- generateXTP(I = parms$N,
                      J = parms$P,
-                     R = parms$K,
-                     CPVE = 0.9)
+                     VAFr = parms$XTP_VAFr,
+                     VAFsum = parms$XTP_VAFsum,
+                     CPVE = parms$XTP_R2)
   dat_orig <- XTP$X
 
   # Generate a dependent variable on true line
   y <- generateDV(X = XTP$T,
-                  R2 = 0.90,
-                  beta = 1)
+                  R2 = parms$yTR2,
+                  beta = parms$yTbeta)
 
   # Define the number of categorical variables for this condition
   n_var_cate <- parms$P * cond$D

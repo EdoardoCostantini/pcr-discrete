@@ -2,7 +2,7 @@
 # Project:  Ordinality
 # Author:   Edoardo Costantini
 # Created:  2021-06-10
-# Modified: 2022-01-16
+# Modified: 2022-01-21
 
 # Packages ----------------------------------------------------------------
 
@@ -46,40 +46,43 @@
   # Empty List
   parms    <- list()
 
-  # Generic
-  parms$dt_rep <- 1e3
-
-  # Seed related
-  parms$seed <- 2021
+  # Simulation parameter
+  parms$dt_rep   <- 1e3 # number of data repetitionsù
+  parms$seed     <- 2021
   parms$nStreams <- 1000
 
   # Data generation
-  parms$N <- 1e3 # sample size
-  parms$K <- 3   # true number of principal components
-  parms$P <- 10  # number of variables
-  parms$item_mean <- 0 # true item mean
-  parms$item_var  <- 1 # true item variance
+  parms$N          <- 1e3 # sample size
+  parms$P          <- 12  # number of variables
+  parms$XTP_VAFr   <- c(.5, .3, .2) # relative variance of each component
+  parms$XTP_VAFsum <- 100 # total variance of the components
+  parms$XTP_R2     <- 0.8
+  parms$yT_R2      <- 0.8
+  parms$yT_beta    <- 1
 
 # Experimental Conditions -------------------------------------------------
 
-  # Parallel Experiments: for the continuous and attenuated relationship
-  # Alternative experimental factor
+  # Number of categories for the discretized variables
   n_cate <- c(7, 5, 3, 2)
+
+  # Proportion of variables discretized in X
   p_cate <- round(seq(.2, 1, length.out = 5), 2)
+
+  # Number of components kept by the PCA extraction
   npcs   <- as.integer(1:parms$P)
   # npcs   <- c(.8, .9, .95)
+
+  # Discretization happens with equal intervals or not
   interval <- c(TRUE)
 
   # Make Conditionsa
-  conds <- expand.grid(N  = parms$N, # sample size
-                       P  = parms$P, # number of total variables
-                       K = n_cate, # number of categories
+  conds <- expand.grid(K = n_cate, # number of categories
                        D = p_cate, # ordinality degree
                        npcs = npcs,
                        interval = interval,
-                       stringsAsFactors = FALSE)
+                       stringsAsFactors = TRUE)
 
-  # correct order
+  # correct order (can I delete this?)
   conds <- conds[, c("N", "P", "K", "D", "npcs", "interval")]
 
   # Print
