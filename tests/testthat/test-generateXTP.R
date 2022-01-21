@@ -12,10 +12,10 @@ set.seed(20220114)
 # Define target parameters
 N <- 1e3
 P <- 9
-K <- 3
 CPVE <- 0.9
 VAFsum <- 100 # total variance of the components?
 VAFr <- c(.5, .4, .2) # variance of each components?
+R <- length(VAFr)
 
 # Use function
 XTP <- generateXTP(I = N,
@@ -33,8 +33,8 @@ eigen_svd <- round(svd(XTP$X)$d^2, 3)
 eigen_pca <- round(PCA$sdev^2, 3)
 
 # Explained variance
-CPVE_svd <- cumsum(prop.table(eigen_svd))[K]
-CPVE_pca <- cumsum(prop.table(eigen_pca))[K]
+CPVE_svd <- cumsum(prop.table(eigen_svd))[R]
+CPVE_pca <- cumsum(prop.table(eigen_pca))[R]
 
 # Component Scores
 T_svd <- round(svd(XTP$X)$u %*% diag(svd(XTP$X)$d), 3)
