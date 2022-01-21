@@ -1,8 +1,8 @@
-# Project:   ordinality
+# Project:   pcr_discrete
 # Objective: Extract Principal Components with different methods
 # Author:    Edoardo Costantini
 # Created:   2021-10-19
-# Modified:  2022-01-16
+# Modified:  2022-01-21
 
 extractPCs <- function(dt = matrix(), keep = 1L){
 # Description -------------------------------------------------------------
@@ -18,9 +18,7 @@ extractPCs <- function(dt = matrix(), keep = 1L){
 # Internals ---------------------------------------------------------------
 
   # dt = dat_disc # MASS::mvrnorm(1e2, rep(0, 3), diag(3))
-  # keep = 3L # either and integer specifying the number of components or a
-  #           # double specifying the proportion of variance explained that
-  #           # should be kept
+  # keep = c("naf", "nkaiser", ".8", "3")[2] # how should we decide what pcs to keep?
 
 # Body --------------------------------------------------------------------
   # Make sure data is scaled
@@ -32,23 +30,36 @@ extractPCs <- function(dt = matrix(), keep = 1L){
   # Compute the PC scores
   T <- (svd_out$u %*% diag(svd_out$d))
 
-  # Check the type of keep input (proportion of variane or number?)
-  if (is.double(keep)) {
-    # Compute a vector of cumulative proportions of explained variances
-    CPVE <- cumsum(prop.table(svd_out$d^2))
+  # Compute a vector of cumulative proportions of explained variances
+  CPVE <- cumsum(prop.table(svd_out$d^2))
 
-    # Set npcs to the firt PC that explains more than target
-    npcs <- Position(function(x) x >= keep, CPVE)
+  # Check if keep is a non-graphical solution
+  keep_nScree <- suppressWarnings(is.na(as.numeric(keep)))
 
-    # Store the actual explained variance by that number of PCs
-    r2 <- CPVE[npcs]
+  # Define npcs and CPVE based on type of keep
+  if(keep_nScree){
+    # Store the eigenvalues
+    eigenvalues <- svd_out$d^2
+
+    # Compute all non-graphical solutions
+    non_graph_scree <- nScree(x = eigenvalues)
+
+    # Keep the result of the one with desired name
+    npcs <- non_graph_scree$Components[, keep]
   } else {
-    # Set npcs to the integer value provided
-    npcs <- keep
-
-    # Compute CPVE
-    r2 <- cumsum(prop.table(svd_out$d^2))[npcs]
+    # Convert keep to number
+    keep <- as.numeric(as.character(keep))
+    if(keep < 1) {
+      # Set npcs to the firt PC that explains more than target
+      npcs <- Position(function(x) x >= keep, CPVE)
+    } else {
+      # Set npcs to the integer value provided
+      npcs <- keep
+    }
   }
+
+  # Store the CPVE associated with this npcs
+  r2 <- CPVE[npcs]
 
   # Store
   return(list(T    = T[, 1:npcs, drop = FALSE],

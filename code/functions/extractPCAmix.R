@@ -2,7 +2,7 @@
 # Objective: extract PCs with the PCAmix method
 # Author:    Edoardo Costantini
 # Created:   2022-01-16
-# Modified:  2022-01-16
+# Modified:  2022-01-21
 
 extractPCAmix <- function(dt = matrix(), keep = 1L, index_cont, index_disc) {
 # Internals ---------------------------------------------------------------
@@ -42,23 +42,36 @@ extractPCAmix <- function(dt = matrix(), keep = 1L, index_cont, index_disc) {
   # Store the PC scores
   T <- pcamix$ind$coord
 
-  # Check the type of keep input (proportion of variane or number?)
-  if (is.double(keep)) {
-    # Compute a vector of cumulative proportions of explained variances
-    CPVE <- pcamix$eig[, "Cumulative"]/100
+  # Compute a vector of cumulative proportions of explained variances
+  CPVE <- pcamix$eig[, "Cumulative"]/100
 
-    # Set npcs to the firt PC that explains more than target
-    npcs <- Position(function(x) x >= keep, CPVE)
+  # Check if keep is a non-graphical solution
+  keep_nScree <- suppressWarnings(is.na(as.numeric(keep)))
 
-    # Store the actual explained variance by that number of PCs
-    r2 <- CPVE[npcs]
+  # Define npcs and CPVE based on type of keep
+  if(keep_nScree){
+    # Store the eigenvalues
+    eigenvalues <- pcamix$eig[, "Eigenvalue"]
+
+    # Compute all non-graphical solutions
+    non_graph_scree <- nScree(x = eigenvalues)
+
+    # Keep the result of the one with desired name
+    npcs <- non_graph_scree$Components[, keep]
   } else {
-    # Set npcs to the integer value provided
-    npcs <- keep
-
-    # Compute CPVE
-    r2 <- pcamix$eig[npcs, "Cumulative"]/100
+    # Convert keep to number
+    keep <- as.numeric(as.character(keep))
+    if(keep < 1) {
+      # Set npcs to the firt PC that explains more than target
+      npcs <- Position(function(x) x >= keep, CPVE)
+    } else {
+      # Set npcs to the integer value provided
+      npcs <- keep
+    }
   }
+
+  # Store the CPVE associated with this npcs
+  r2 <- CPVE[npcs]
 
   # Store
   return(list(T    = T[, 1:npcs, drop = FALSE],

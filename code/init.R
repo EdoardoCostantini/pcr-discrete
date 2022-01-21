@@ -20,6 +20,7 @@
                  "fungible",    # for Multivariate Skewed Distribution
                  "testthat",
                  "moments",     # for skewness
+                 "nFactors",    # for non-graphical solutions to npcs
                  "FactoMineR")
 
   lapply(pack_list, library, character.only = TRUE, verbose = FALSE)
@@ -69,8 +70,11 @@
   p_cate <- round(seq(.2, 1, length.out = 5), 2)
 
   # Number of components kept by the PCA extraction
-  npcs   <- as.integer(1:parms$P)
-  # npcs   <- c(.8, .9, .95)
+  npcs <- c("naf", "nkaiser",       # non-graphical screeplot solutions
+            parms$XTP_R2,           # (true) CPVE based
+            1,                      # most summary
+            length(parms$XTP_VAFr), # (true) number of components
+            parms$P)                # least summary
 
   # Discretization happens with equal intervals or not
   interval <- c(TRUE)
