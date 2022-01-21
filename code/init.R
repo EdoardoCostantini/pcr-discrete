@@ -67,7 +67,7 @@
   n_cate <- c(7, 5, 3, 2)
 
   # Proportion of variables discretized in X
-  p_cate <- round(seq(.2, 1, length.out = 5), 2)
+  p_cate <- c(1/3, 2/3, 1)
 
   # Number of components kept by the PCA extraction
   npcs <- c("naf", "nkaiser",       # non-graphical screeplot solutions
@@ -77,7 +77,7 @@
             parms$P)                # least summary
 
   # Discretization happens with equal intervals or not
-  interval <- c(TRUE)
+  interval <- c(TRUE) #, FALSE)
 
   # Make Conditionsa
   conds <- expand.grid(K = n_cate, # number of categories
@@ -86,15 +86,15 @@
                        interval = interval,
                        stringsAsFactors = TRUE)
 
-  # correct order (can I delete this?)
-  conds <- conds[, c("N", "P", "K", "D", "npcs", "interval")]
+  # # correct order (can I delete this?)
+  # conds <- conds[, c("N", "P", "K", "D", "npcs", "interval")]
 
-  # Print
-  round(conds, 2)
+  # # Print
+  # round(conds, 2)
 
   # Append Condition Tag
   conds$tag <- sapply(1:nrow(conds), function(i) {
-    conds$D <- conds$D*100 # to improve tag name
+    conds$D <- round(conds$D*100,0) # to improve tag name
     paste0(colnames(conds), conds[i, ], collapse = "_")
   }
   )

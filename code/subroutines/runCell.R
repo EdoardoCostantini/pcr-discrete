@@ -14,7 +14,7 @@ runCell <- function(cond,
 # Example Internals -------------------------------------------------------
   
   # set.seed(1234)
-  # cond    = conds[13, ]
+  # cond    = conds[6, ]
   # rp = 1
 
 # Data Generation ---------------------------------------------------------
@@ -29,8 +29,8 @@ runCell <- function(cond,
 
   # Generate a dependent variable on true line
   y <- generateDV(X = XTP$T,
-                  R2 = parms$yTR2,
-                  beta = parms$yTbeta)
+                  R2 = parms$yT_R2,
+                  beta = parms$yT_beta)
 
   # Define the number of categorical variables for this condition
   n_var_cate <- parms$P * cond$D
@@ -70,22 +70,28 @@ runCell <- function(cond,
 # Analysis ----------------------------------------------------------------
 
   # PCA Original
-  pcs_orig <- extractPCs(dat_orig, keep = cond$npcs)
+  pcs_orig <- extractPCs(dt = dat_orig,
+                         keep = as.character(cond$npcs))
 
   # PCA Numerical
-  pcs_nume <- extractPCs(dat_disc, keep = cond$npcs)
+  pcs_nume <- extractPCs(dt = dat_disc,
+                         keep = as.character(cond$npcs))
 
   # PCA Disjunction table
-  pcs_disj <- extractPCs(dat_disj, keep = cond$npcs)
+  pcs_disj <- extractPCs(dt = dat_disj,
+                         keep = as.character(cond$npcs))
 
   # PCA Dummy
-  pcs_dumm <- extractPCs(dat_dumm, keep = cond$npcs)
+  pcs_dumm <- extractPCs(dt = dat_dumm,
+                         keep = as.character(cond$npcs))
 
   # PCA Polychoric
-  pcs_poly <- extractPCsMixed(dat_disc, keep = cond$npcs)
+  pcs_poly <- extractPCsMixed(dt = dat_disc,
+                              keep = as.character(cond$npcs))
 
   # PCAmix
-  pcs_PCAmix <- extractPCAmix(dat_disc, keep = cond$npcs,
+  pcs_PCAmix <- extractPCAmix(dt = dat_disc,
+                              keep = as.character(cond$npcs),
                               index_cont = index_cont,
                               index_disc = index_disc)
 
