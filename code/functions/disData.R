@@ -2,7 +2,7 @@
 # Objective: Function to discretize all the columns of dataset
 # Author:    Edoardo Costantini
 # Created:   2021-10-19
-# Modified:  2022-01-21
+# Modified:  2022-01-25
 
 disData <- function(x, K, interval = TRUE){
   # Given a continuous varible x, and a number of categories K,
@@ -11,40 +11,43 @@ disData <- function(x, K, interval = TRUE){
 
   ## Example inputs
   # x = rnorm(1e3)
-  # K = 2
+  # K = 3
   # interval = TRUE
 
   if (interval == TRUE){
-    x_dis <- as.numeric(cut(x, K))
+    # Define vector of lags (equally spaced)
+    lags <- rep(abs(min(x) - max(x)) / K, (K-1))
+
+    # Define the break points x
+    breaks <- c(cumsum(c(minimum = min(x), fixed = lags)), maximum = max(x))
+
+    # Cut x with the given brakes
+    x_dis <- as.numeric(cut(x = x, breaks = breaks, include.lowest = TRUE))
   } else {
-    # Define a starting probability for the first bin
-    prob_in <- .4 # first bin probability
+    # Define an indictor of status for a while loop
+    continue <- TRUE
 
-    # Define a reduction probability for subsequent bins
-    prob_reduction <- .6 # every subsequent bin contains .6 of the remaining obs
+    # Start a loop to obtain a sufficiently varied discretized variable
+    while (continue){
+      # Define vector of random breaks
+      breaks <- c(minimum = min(x),
+                  random = sort(runif(n = (K-1), min = min(x), max = max(x))),
+                  maximum = max(x))
 
-    # Define an empty vector to store the probabilities of being in a bin
-    probs <- rep(NA, K)
+      # Cut x with the given brakes
+      x_dis <- as.numeric(cut(x = x, breaks = breaks, include.lowest = TRUE))
 
-    # Compute the probabilities
-    for(k in 1:K){
-      if(k < K){
-        probs[k] <- prob_in
-        whats_left <- (1 - sum(probs, na.rm = TRUE))
-        prob_in <- whats_left * prob_reduction
-      } else {
-        probs[k] <- whats_left
+      # Compute proportion of cases in each bin
+      prop_cases <- table(x_dis)/length(x)
+
+      # If at least half of the categories have more than .1 cases, stop
+      if(all(prop_cases > .1)){
+        continue <- FALSE
       }
     }
-
-    # Define the break points for the desired bins
-    breaks <- cumsum(c(0, probs))
-
-    # Obtain the cdf values for the given x
-    cdf_x <- pnorm(x, mean = mean(x), sd = sd(x))
-
-    # Cut the cdf_x with the breaks
-    x_dis <- as.numeric(cut(cdf_x, breaks))
   }
-  return(x_dis)
+
+  return(list(x = x_dis,
+              breaks = breaks,
+              prop_cases = prop_cases))
 }
