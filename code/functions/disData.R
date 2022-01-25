@@ -13,7 +13,7 @@ disData <- function(x, K, interval = TRUE, min_bin = 0.05){
   # x = rnorm(1e3)  # variable to discretize
   # K = 3           # number of target categories
   # interval = TRUE # whether we are discretizing to interval (T) or orindal (F)
-  # min_bin = NULL  # minimum proportion of cases in a bin for ordinal items
+  # min_bin = 0.05  # minimum proportion of cases in a bin for ordinal items
 
   if (interval == TRUE){
     # Define vector of lags (equally spaced)
@@ -24,6 +24,9 @@ disData <- function(x, K, interval = TRUE, min_bin = 0.05){
 
     # Cut x with the given brakes
     x_dis <- as.numeric(cut(x = x, breaks = breaks, include.lowest = TRUE))
+
+    # Compute proportion of cases in each bin
+    prop_cases <- table(x_dis)/length(x)
   } else {
     # Define an indictor of status for a while loop
     continue <- TRUE
