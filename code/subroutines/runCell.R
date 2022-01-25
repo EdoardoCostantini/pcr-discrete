@@ -1,7 +1,7 @@
 # Project:  pcr_discrete
 # Author:   Edoardo Costantini
 # Created:  2021-06-10
-# Modified: 2022-01-21
+# Modified: 2022-01-25
 # Note:     A "cell" is a cycle through the set of conditions.
 #           The function in this script generates 1 data set, performs
 #           imputations for every condition in the set.
@@ -42,11 +42,14 @@ runCell <- function(cond,
   index_cont <- which(!(1:parms$P %in% index_disc))
 
   # Discretize variables based on these indexes
-  col_disc <- lapply(dat_orig[, index_disc],
-                     disData,
-                     K = cond$K,
-                     interval = cond$interval,
-                     min_bin = parms$min_bin)
+  disData_out <- lapply(dat_orig[, index_disc],
+                        disData,
+                        K = cond$K,
+                        interval = cond$interval,
+                        min_bin = parms$min_bin)
+
+  # Extract discretized columns
+  col_disc <- lapply(disData_out, "[[", "x")
 
   # Combine the discretized variables with the ones that stayed continuous
   dat_disc <- cbind(dat_orig[, index_cont, drop = FALSE],
