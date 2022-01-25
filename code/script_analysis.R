@@ -1,8 +1,8 @@
-### Title:    Analysing results
-### Project:  Ordinality
-### Author:   Edoardo Costantini
-### Created:  2021-06-10
-### Modified: 2022-01-05
+# Title:    Analysing results
+# Author:   Edoardo Costantini
+# Project:  Ordinality
+# Created:  2021-06-10
+# Modified: 2022-01-05
 
   ## Make sure we have a clean environment:
   rm(list = ls())
@@ -23,7 +23,7 @@
   file_lin <- grep("_lin", list.files(inDir), value = TRUE)
 
   # Read output
-  gg_shape <- readRDS(paste0(inDir, file_box[3]))
+  gg_shape <- readRDS(paste0(inDir, file_box[4]))
   gg_line <- readRDS(paste0(inDir, file_lin[3]))
 
   # Support Functions
@@ -31,16 +31,17 @@
 
 # Plots -------------------------------------------------------------------
 
-  result <- c("mses.", "r2.", "cors.")[2]
+  result <- c("mses.", "npcs.", "r2.", "cors.")[1]
 
   K_conditions <- rev(sort(unique(gg_shape$K)))
-  D_conditions <- sort(unique(gg_shape$D))
-  int_conditions <- unique(gg_shape$interval)[1]
+  D_conditions <- sort(unique(gg_shape$D))[3]
+  int_conditions <- unique(gg_shape$interval)[2]
 
   methods <- paste(
     c("orig", "nume", "poly", "dumm", "disj", "PCAmix"),
     collapse = "|"
   )
+
   plot1 <- gg_shape %>%
     # Subset
     filter(grepl(result, variable)) %>%
@@ -59,9 +60,7 @@
     # Grid
     facet_grid(rows = vars(factor(D,
                                   labels = paste0("D = ", D_conditions))),
-               cols = vars(factor(K,
-                                  levels = K_conditions,
-                                  labels = paste0("K = ", K_conditions))),
+               cols = vars(factor(npcs)),
                scales = "fixed") +
     # Format
     theme(text = element_text(size = 15),
@@ -71,8 +70,7 @@
           axis.title = element_text(size = 15)) +
     labs(title = paste0("interval: ", int_conditions),
          x     = NULL,
-         y     = result) +
-    coord_cartesian(ylim = c(0, 1))
+         y     = result)
 
   plot1
 
