@@ -45,7 +45,8 @@ runCell <- function(cond,
   col_disc <- lapply(dat_orig[, index_disc],
                      disData,
                      K = cond$K,
-                     interval = cond$interval)
+                     interval = cond$interval,
+                     min_bin = parms$min_bin)
 
   # Combine the discretized variables with the ones that stayed continuous
   dat_disc <- cbind(dat_orig[, index_cont, drop = FALSE],

@@ -2,7 +2,7 @@
 # Project:  Ordinality
 # Author:   Edoardo Costantini
 # Created:  2021-06-10
-# Modified: 2022-01-21
+# Modified: 2022-01-25
 
 # Packages ----------------------------------------------------------------
 
@@ -60,6 +60,8 @@
   parms$XTP_R2     <- 0.8
   parms$yT_R2      <- 0.8
   parms$yT_beta    <- 1
+  parms$min_bin    <- 0.05 # target minimum proportion of cases in every
+                           # category of discretized variables
 
 # Experimental Conditions -------------------------------------------------
 
@@ -85,12 +87,6 @@
                        npcs = npcs,
                        interval = interval,
                        stringsAsFactors = TRUE)
-
-  # # correct order (can I delete this?)
-  # conds <- conds[, c("N", "P", "K", "D", "npcs", "interval")]
-
-  # # Print
-  # round(conds, 2)
 
   # Append Condition Tag
   conds$tag <- sapply(1:nrow(conds), function(i) {

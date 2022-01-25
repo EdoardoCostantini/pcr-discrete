@@ -4,15 +4,16 @@
 # Created:   2021-10-19
 # Modified:  2022-01-25
 
-disData <- function(x, K, interval = TRUE){
+disData <- function(x, K, interval = TRUE, min_bin = 0.05){
   # Given a continuous varible x, and a number of categories K,
   # this function return a discretized version (either ordinal or
   # interval scale)
 
   ## Example inputs
-  # x = rnorm(1e3)
-  # K = 3
-  # interval = TRUE
+  # x = rnorm(1e3)  # variable to discretize
+  # K = 3           # number of target categories
+  # interval = TRUE # whether we are discretizing to interval (T) or orindal (F)
+  # min_bin = NULL  # minimum proportion of cases in a bin for ordinal items
 
   if (interval == TRUE){
     # Define vector of lags (equally spaced)
@@ -40,13 +41,12 @@ disData <- function(x, K, interval = TRUE){
       # Compute proportion of cases in each bin
       prop_cases <- table(x_dis)/length(x)
 
-      # If at least half of the categories have more than .5 cases, stop
-      if(all(prop_cases > .05)){
+      # If all of the categories have more than min_bin cases, stop
+      if(all(prop_cases >= min_bin)){
         continue <- FALSE
       }
     }
   }
-
   return(list(x = x_dis,
               breaks = breaks,
               prop_cases = prop_cases))
