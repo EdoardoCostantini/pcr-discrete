@@ -9,6 +9,7 @@ rm(list = ls())
 
 ## Initialize the environment:
 source("./init.R")
+breaks_batch <- readRDS("../input/breaks_batch.RDS")
 
 ## Prepare storing results
 source("./fs.R")
@@ -30,8 +31,10 @@ reps <- 1 : 500
 clus <- makeCluster(10)
 
 ## Export to worker nodes
-# export global env
+# export fs object from the global env
 clusterExport(cl = clus, varlist = "fs", envir = .GlobalEnv)
+# export breaks_batch object from the global env
+clusterExport(cl = clus, varlist = "breaks_batch", envir = .GlobalEnv)
 # export script to be executed
 clusterEvalQ(cl = clus, expr = source("./init.R"))
 
