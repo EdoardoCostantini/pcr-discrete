@@ -2,14 +2,13 @@
 ### Project:  Ordinality
 ### Author:   Edoardo Costantini
 ### Created:  2021-06-10
-### Modified: 2021-10-19
+### Modified: 2022-01-25
 
 ## Make sure we have a clean environment:
 rm(list = ls())
 
 ## Initialize the environment:
 source("./init.R")
-breaks_batch <- readRDS("../input/breaks_batch.RDS")
 
 ## Prepare storing results
 source("./fs.R")
@@ -33,8 +32,6 @@ clus <- makeCluster(10)
 ## Export to worker nodes
 # export fs object from the global env
 clusterExport(cl = clus, varlist = "fs", envir = .GlobalEnv)
-# export breaks_batch object from the global env
-clusterExport(cl = clus, varlist = "breaks_batch", envir = .GlobalEnv)
 # export script to be executed
 clusterEvalQ(cl = clus, expr = source("./init.R"))
 

@@ -50,34 +50,6 @@ prop_cases <- lapply(disData_out, "[[", "prop_cases")
   })
 
 # Tests
-test_that("Every category contains at least .1 of the data", {
-  expect_true(all(unlist(prop_cases) > .1), 1)
+test_that("Every category contains at least .5 of the data", {
+  expect_true(all(unlist(prop_cases) > .5), 1)
 })
-
-# Use of the function
-
-# Read batch of breaks to use
-breaks_batch <- readRDS("../input/breaks_batch.RDS")
-
-# Set seed
-set.seed(20220105)
-
-# Generate some X
-n <- 1e3
-K <- c(2, 3, 5, 7)
-p <- length(K)
-X <- matrix(rnorm(n * p), nrow = n, ncol = p)
-
-# Non-interval scales
-disData_out <- lapply(1:length(K), function (k) {
-  batch <- breaks_batch[[k]]
-  current_breaks <- batch[sample(1:nrow(batch), size = 1), ]
-  current_breaks[1] <- -Inf
-  current_breaks[length(current_breaks)] <- +Inf
-
-  disData(X[, k],
-          K = K[k],
-          interval = FALSE,
-          breaks = current_breaks)
-}
-)
