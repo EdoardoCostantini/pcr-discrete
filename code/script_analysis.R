@@ -2,7 +2,7 @@
 # Author:   Edoardo Costantini
 # Project:  Ordinality
 # Created:  2021-06-10
-# Modified: 2022-01-05
+# Modified: 2022-01-25
 
   ## Make sure we have a clean environment:
   rm(list = ls())
@@ -18,30 +18,34 @@
 
 # Load Results ----------------------------------------------------------
 
-  inDir <- "../output/"
-  file_box <- grep("_box", list.files(inDir), value = TRUE)
-  file_lin <- grep("_lin", list.files(inDir), value = TRUE)
-
-  # Read output
-  gg_shape <- readRDS(paste0(inDir, file_box[4]))
-  gg_line <- readRDS(paste0(inDir, file_lin[3]))
-
   # Support Functions
   source("./init.R")
 
+  # Read output
+  inDir <- "../output/"
+  grep("_box", list.files(inDir), value = TRUE)
+  gg_shape <- readRDS(paste0(inDir, "20220125_143543_box.rds"))
+
 # Plots -------------------------------------------------------------------
 
-  result <- c("mses.", "npcs.", "r2.", "cors.")[1]
+  # Define which outcome measure to plot
+  result <- c("mses.", "npcs.", "r2.", "cors.")[2]
 
+  # Define which conditions to plot and order of some factors
   K_conditions <- rev(sort(unique(gg_shape$K)))
   D_conditions <- sort(unique(gg_shape$D))[3]
   int_conditions <- unique(gg_shape$interval)[2]
-
   methods <- paste(
     c("orig", "nume", "poly", "dumm", "disj", "PCAmix"),
     collapse = "|"
   )
 
+  # Define the caption of the plot
+  caption <- paste0("y axis: ", stringr::str_remove(result, "\\."),
+                    "; interval: ", int_conditions,
+                    "; discrete: ", D_conditions)
+
+  # Obtain plot
   plot1 <- gg_shape %>%
     # Subset
     filter(grepl(result, variable)) %>%
@@ -68,23 +72,28 @@
           axis.text = element_text(size = 15),
           axis.text.x = element_text(angle = 45, hjust = 0.95),
           axis.title = element_text(size = 15)) +
-    labs(title = paste0("interval: ", int_conditions),
+    labs(title = stringr::str_remove(result, "\\."),
          x     = NULL,
-         y     = result)
+         y     = NULL,
+         caption = caption)
+    # coord_cartesian(ylim = c(1, 2))
 
+  # Look at plot
   plot1
 
 # Save plots --------------------------------------------------------------
 
-  file_format <- ".png"
-  plot_name <- paste0("interval_sacle_", int_conditions)
+  file_format <- ".pdf"
+  plot_name <- paste0("outcome_", stringr::str_remove(result, "\\."),
+                      "_interval_", int_conditions,
+                      "_discrete_", D_conditions)
   out_dir <- "~/Desktop/"
   file_name <- paste0(out_dir, plot_name, file_format)
   if(file_format == ".pdf"){
-    pdf(file_name, width = 15, height = 15)
+    pdf(file_name, width = 15, height = 7.5)
   }
   if(file_format == ".png"){
-    png(file_name, width = 15, height = 15, units = "in", res = 384)
+    png(file_name, width = 15, height = 7.5, units = "in", res = 384)
   }
   plot1
   dev.off()

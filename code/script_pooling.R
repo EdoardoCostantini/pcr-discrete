@@ -2,7 +2,7 @@
 # Author:   Edoardo Costantini
 # Project:  Ordinality
 # Created:  2021-06-10
-# Modified: 2021-11-03
+# Modified: 2022-01-25
 
   ## Make sure we have a clean environment:
   rm(list = ls())
@@ -13,8 +13,7 @@
 # Load Results ----------------------------------------------------------
 
   inDir <- "../output/"
-  files <- grep("tar", list.files(inDir), value = TRUE)
-  target_tar <- files[11]
+  target_tar <- "20220125_143543.tar.gz"
   output <- readTarGz(target_tar)
 
 # Restructure Results -----------------------------------------------------
