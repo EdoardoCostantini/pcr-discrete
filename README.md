@@ -1,6 +1,8 @@
 # MI-PCR Comparison
 Simulation study to compare the out-of-sample prediction performance of Principal Component Regression 
-with discrete data as input data. 
+with discrete data as input data.
+Detailed notes on the project goal, set up, and results can be found 
+[here](https://lavish-hollyhock-981.notion.site/PCR-with-discrete-data-ed2f8dac46a7446b9e9fac5aed9aa99b).
 
 # Repository structure
 This directory contains the following main subfolders:
@@ -13,10 +15,6 @@ This directory contains the following main subfolders:
 - graphs: folder to store plots
 - output: folder where the results of scripts located in code are stored
 - tests: folder to store testing scripts
-
-# Project
-Detailed notes on the project goal and results can be found 
-[here](https://lavish-hollyhock-981.notion.site/PCR-with-discrete-data-ed2f8dac46a7446b9e9fac5aed9aa99b).
 
 # How to replicate results
 
@@ -42,24 +40,32 @@ You can also replicate the simulation on a personal computer by following these 
   output folder.
 - Open the script `code/script_analysis.R` to obtain the plots
 
-# Tweaking the simulation to your liking
+# Understanding the codebase
 If you want to play around with this simulation study and 
-include conditions of your liking keep in mind the following:
+include conditions of your liking keep in mind the following simulation structure:
 - Fixed and experimental factors are provided exclusively by in the
   `init.R`.
-- The simulation has a particular structure:
-  - `run_sim.R` is a script that runs in parallel different calls of 
-    the subroutine `doRep()` (located: `code/subroutines/doRep.R()`).
-    The script calls one instance of `doRep()` for every repetition 
-    desired. A *repetition* here is a cycle through all the conditions.
-  - `doRep()` is a subroutine that calls `runCell()` for every condition 
-    in a sequential loop. 
-    In this set up, parallelization happens at the level of the repetitions,
-    not at the level of the conditions.
-  - `runCell()` is a subroutine calling a collection of functions to
-    actually perform the steps of the simulation:
-    1. it generates the data 
-    2. it discretises the data
-    3. it performs PCA according to the various methods
-    4. it computes outcomes measures
-    5. it saves an .rds file in a temporary output folder
+- `run_sim.R` is a script that runs in parallel different calls of 
+  the subroutine `doRep()` (located: `code/subroutines/doRep.R()`).
+  The script calls one instance of `doRep()` for every repetition 
+  desired. A *repetition* here is a cycle through all the conditions.
+- `doRep()` is a subroutine that calls `runCell()` for every condition 
+  in a sequential loop. 
+  In this set up, parallelization happens at the level of the repetitions,
+  not at the level of the conditions.
+- `runCell()` is a subroutine calling a collection of functions to
+  actually perform the steps of the simulation:
+  1. Generation of X - `generateXTP()` generates the true principal components (T) 
+     and observed items (X)
+  2. Generation of y - `generateDV()` generates the dependent variable as a linear 
+     combination of the true components
+  3. Discretization of (part of) X - `disData()` discretizes a condition specific 
+     proportion of variables in X
+  4. Preparation of different version of X - Disjunction table and dummy coded representations
+     of X are created
+  5. PC extraction - a collection of `extractPC**()` functions performs PCA according to the 
+     various approaches
+  6. Outcome measures are computed - `extractMSE()` the MSE and other desired outcomes are
+     extracted from previously created objects
+  7. Storing results - An object containing the outcome measures is stored as .rds file 
+     at every repetition for every condition in a temporary output folder.
