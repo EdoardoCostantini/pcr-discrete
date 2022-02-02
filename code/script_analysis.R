@@ -29,32 +29,36 @@
 # Plots -------------------------------------------------------------------
 
   # Define which outcome measure to plot
-  result <- c("mses.", "npcs.", "r2.", "cors.")[2]
+  result <- c("mses.", "npcs.", "r2.", "cors.")[1]
 
   # Define which conditions to plot and order of some factors
-  K_conditions <- rev(sort(unique(gg_shape$K)))
+  K_conditions <- rev(sort(unique(gg_shape$K)))#[2]
   D_conditions <- sort(unique(gg_shape$D))[3]
   int_conditions <- unique(gg_shape$interval)[2]
   methods <- paste(
     c("orig", "nume", "poly", "dumm", "disj", "PCAmix"),
     collapse = "|"
   )
+  npcs_conditions <- levels(gg_shape$npcs)#[1]
+  max_value <- 3
 
   # Define the caption of the plot
   caption <- paste0("y axis: ", stringr::str_remove(result, "\\."),
                     "; interval: ", int_conditions,
-                    "; discrete: ", D_conditions)
+                    "; discrete: ", round(D_conditions, 2))
 
   # Obtain plot
   plot1 <- gg_shape %>%
+    # Obtain Root MSE
+    mutate(rmse = sqrt(value)) %>%
     # Subset
+    filter(rmse <= max_value) %>%
     filter(grepl(result, variable)) %>%
     filter(grepl(methods, variable)) %>%
     filter(D %in% D_conditions) %>%
     filter(K %in% K_conditions) %>%
     filter(interval %in% int_conditions) %>%
-    # Obtain Root MSE
-    mutate(rmse = sqrt(value)) %>%
+    filter(npcs %in% npcs_conditions) %>%
     # Change labels of X axis
     mutate(variable = fct_relabel(variable, str_replace, result, "")
     ) %>%
@@ -62,8 +66,7 @@
     ggplot(aes(x = variable, y = rmse)) +
     geom_boxplot() +
     # Grid
-    facet_grid(rows = vars(factor(D,
-                                  labels = paste0("D = ", D_conditions))),
+    facet_grid(rows = vars(factor(K)),
                cols = vars(factor(npcs)),
                scales = "fixed") +
     # Format
@@ -76,7 +79,7 @@
          x     = NULL,
          y     = NULL,
          caption = caption)
-    # coord_cartesian(ylim = c(1, 2))
+    # coord_cartesian(ylim = c(.9, 2.5))
 
   # Look at plot
   plot1
@@ -90,10 +93,10 @@
   out_dir <- "~/Desktop/"
   file_name <- paste0(out_dir, plot_name, file_format)
   if(file_format == ".pdf"){
-    pdf(file_name, width = 15, height = 7.5)
+    pdf(file_name, width = 15, height = 15)
   }
   if(file_format == ".png"){
-    png(file_name, width = 15, height = 7.5, units = "in", res = 384)
+    png(file_name, width = 15, height = 15, units = "in", res = 384)
   }
   plot1
   dev.off()

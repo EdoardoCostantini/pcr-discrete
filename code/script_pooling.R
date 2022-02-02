@@ -34,7 +34,7 @@
   )
 
   # Read
-  file_name <- grep("out", list.files(inDir), value = TRUE)[3]
+  file_name <- grep("out", list.files(inDir), value = TRUE)[4]
   run_name <- gsub("_out.rds", "", file_name)
   out <- readRDS(paste0("../output/", file_name))
 
