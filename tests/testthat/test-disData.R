@@ -50,6 +50,6 @@ prop_cases <- lapply(disData_out, "[[", "prop_cases")
   })
 
 # Tests
-test_that("Every category contains at least .5 of the data", {
-  expect_true(all(unlist(prop_cases) > .5), 1)
+test_that("Every category contains at least .05 of the data", {
+  expect_true(all(unlist(prop_cases) > .05), 1)
 })

@@ -2,7 +2,7 @@
 # Objective: Function to discretize all the columns of dataset
 # Author:    Edoardo Costantini
 # Created:   2021-10-19
-# Modified:  2022-01-25
+# Modified:  2022-04-21
 
 disData <- function(x, K, interval = TRUE, min_bin = 0.05){
   # Given a continuous varible x, and a number of categories K,
@@ -28,27 +28,37 @@ disData <- function(x, K, interval = TRUE, min_bin = 0.05){
     # Compute proportion of cases in each bin
     prop_cases <- table(x_dis)/length(x)
   } else {
-    # Define an indictor of status for a while loop
-    continue <- TRUE
 
-    # Start a loop to obtain a sufficiently varied discretized variable
-    while (continue){
-      # Define vector of random breaks
-      breaks <- c(minimum = min(x),
-                  random = sort(runif(n = (K-1), min = min(x), max = max(x))),
-                  maximum = max(x))
+    # Define a starting probability for the first bin
+    prob_in <- .6 # first bin probability
 
-      # Cut x with the given brakes
-      x_dis <- as.numeric(cut(x = x, breaks = breaks, include.lowest = TRUE))
+    # Define a reduction probability for subsequent bins
+    prob_reduction <- .6 # every subsequent bin contains .6 of the remaining obs
 
-      # Compute proportion of cases in each bin
-      prop_cases <- table(x_dis)/length(x)
+    # Define an empty vector to store the probabilities of being in a bin
+    probs <- rep(NA, K)
 
-      # If all of the categories have more than min_bin cases, stop
-      if(all(prop_cases >= min_bin)){
-        continue <- FALSE
+    # Compute the probabilities
+    for(k in 1:K){
+      if(k < K){
+        probs[k] <- prob_in
+        whats_left <- (1 - sum(probs, na.rm = TRUE))
+        prob_in <- whats_left * prob_reduction
+      } else {
+        probs[k] <- whats_left
       }
     }
+
+    # Define the break points for the desired bins
+    breaks_p <- cumsum(c(0, probs))
+    breaks <- qnorm(breaks_p, mean = mean(x), sd = sd(x))
+
+    # Cut x with the given brakes
+    x_dis <- as.numeric(cut(x = x, breaks = breaks, include.lowest = TRUE))
+
+    # Compute proportion of cases in each bin
+    prop_cases <- table(x_dis)/length(x)
+
   }
   return(list(x = x_dis,
               breaks = breaks,
