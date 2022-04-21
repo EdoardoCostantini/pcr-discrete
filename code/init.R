@@ -55,10 +55,10 @@
   # Data generation
   parms$N          <- 1e3 # sample size
   parms$P          <- 12  # number of variables
-  parms$XTP_VAFr   <- c(.5, .3, .2) # relative variance of each component
+  parms$XTP_VAFr   <- c(.5, .3, .2) # relative variance of each component (length = number of pcs)
   parms$XTP_VAFsum <- 100 # total variance of the components
-  parms$XTP_R2     <- 0.8
-  parms$yT_R2      <- 0.8
+  parms$XTP_R2     <- 0.8 # explained variance by the true number of components
+  parms$yT_R2      <- 0.8 # explained variance by linear regression model
   parms$yT_beta    <- 1
   parms$min_bin    <- 0.05 # target minimum proportion of cases in every
                            # category of discretized variables
