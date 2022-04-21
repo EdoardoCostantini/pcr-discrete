@@ -29,18 +29,17 @@
 # Plots -------------------------------------------------------------------
 
   # Define which outcome measure to plot
-  result <- c("mses.", "npcs.", "r2.", "cors.")[1]
+  result <- c("mses.", "npcs.", "r2.", "cors.")[2]
 
   # Define which conditions to plot and order of some factors
   K_conditions <- rev(sort(unique(gg_shape$K)))#[2]
-  D_conditions <- sort(unique(gg_shape$D))[3]
+  D_conditions <- sort(unique(gg_shape$D))[2]
   int_conditions <- unique(gg_shape$interval)[2]
   methods <- paste(
     c("orig", "nume", "poly", "dumm", "disj", "PCAmix"),
     collapse = "|"
   )
   npcs_conditions <- levels(gg_shape$npcs)#[1]
-  max_value <- 3
 
   # Define the caption of the plot
   caption <- paste0("y axis: ", stringr::str_remove(result, "\\."),
@@ -50,9 +49,10 @@
   # Obtain plot
   plot1 <- gg_shape %>%
     # Obtain Root MSE
-    mutate(rmse = sqrt(value)) %>%
+    # mutate(value = sqrt(value)) %>%
+    mutate(value = case_when(result == "mses." ~ sqrt(value),
+                             result != "mses." ~ value)) %>%
     # Subset
-    filter(rmse <= max_value) %>%
     filter(grepl(result, variable)) %>%
     filter(grepl(methods, variable)) %>%
     filter(D %in% D_conditions) %>%
@@ -63,13 +63,14 @@
     mutate(variable = fct_relabel(variable, str_replace, result, "")
     ) %>%
     # Main Plot
-    ggplot(aes(x = variable, y = rmse)) +
+    ggplot(aes(x = variable, y = value)) +
     geom_boxplot() +
     # Grid
     facet_grid(rows = vars(factor(K)),
                cols = vars(factor(npcs)),
                scales = "fixed") +
     # Format
+    # coord_cartesian(ylim = c(.9, 2.5)) +
     theme(text = element_text(size = 15),
           plot.title = element_text(hjust = 0.5),
           axis.text = element_text(size = 15),
@@ -79,7 +80,6 @@
          x     = NULL,
          y     = NULL,
          caption = caption)
-    # coord_cartesian(ylim = c(.9, 2.5))
 
   # Look at plot
   plot1
