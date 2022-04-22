@@ -2,7 +2,7 @@
 # Author:   Edoardo Costantini
 # Project:  Ordinality
 # Created:  2021-06-10
-# Modified: 2022-01-25
+# Modified: 2022-04-22
 
   ## Make sure we have a clean environment:
   rm(list = ls())
@@ -24,7 +24,7 @@
   # Read output
   inDir <- "../output/"
   grep("_box", list.files(inDir), value = TRUE)
-  gg_shape <- readRDS(paste0(inDir, "20220125_143543_box.rds"))
+  gg_shape <- readRDS(paste0(inDir, "20220421_154258_box.rds"))
 
 # Plots -------------------------------------------------------------------
 
