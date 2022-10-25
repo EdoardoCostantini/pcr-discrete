@@ -1,6 +1,5 @@
 # MI-PCR Comparison
-Simulation study to compare the out-of-sample prediction performance of Principal Component Regression 
-with discrete data as input data.
+Simulation study to compare the out-of-sample prediction performance of Principal Component Regression with discrete data as input data.
 Detailed notes on the project goal, set up, and results can be found 
 [here](https://lavish-hollyhock-981.notion.site/PCR-with-discrete-data-ed2f8dac46a7446b9e9fac5aed9aa99b).
 

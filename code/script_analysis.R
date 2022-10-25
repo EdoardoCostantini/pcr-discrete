@@ -29,7 +29,7 @@
 # Plots -------------------------------------------------------------------
 
   # Define which outcome measure to plot
-  result <- c("mses.", "npcs.", "r2.", "cors.")[2]
+  result <- c("mses.", "npcs.", "r2.", "cors.")[1]
 
   # Define which conditions to plot and order of some factors
   K_conditions <- rev(sort(unique(gg_shape$K)))#[2]

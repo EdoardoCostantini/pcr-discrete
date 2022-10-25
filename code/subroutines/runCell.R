@@ -14,17 +14,21 @@ runCell <- function(cond,
 # Example Internals -------------------------------------------------------
   
   # set.seed(1234)
-  # cond    = conds[133, ]
+  # cond    = conds[288, ]
   # rp = 1
 
 # Data Generation ---------------------------------------------------------
 
   # Generate data
-  XTP <- generateXTP(I = parms$N,
-                     J = parms$P,
-                     VAFr = parms$XTP_VAFr,
-                     VAFsum = parms$XTP_VAFsum,
-                     CPVE = parms$XTP_R2)
+  XTP <- generateXTP(
+    I = parms$N,
+    J = parms$P,
+    VAFr = parms$XTP_VAFr,
+    VAFsum = parms$XTP_VAFsum,
+    CPVE = parms$XTP_R2,
+    skewness = as.numeric(cond[, grep("skewness", names(cond))]),
+    kurtosis = as.numeric(cond[, grep("kurtosis", names(cond))])
+  )
   dat_orig <- XTP$X
 
   # Generate a dependent variable on true line
@@ -98,6 +102,9 @@ runCell <- function(cond,
                               keep = as.character(cond$npcs),
                               index_cont = index_cont,
                               index_disc = index_disc)
+
+  # TODO: think of adding Robust PCA at least with MCD approach
+  #        
 
   # Append results
   pcs_list <- list(

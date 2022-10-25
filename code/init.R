@@ -2,7 +2,7 @@
 # Project:  Ordinality
 # Author:   Edoardo Costantini
 # Created:  2021-06-10
-# Modified: 2022-01-25
+# Modified: 2022-10-25
 
 # Packages ----------------------------------------------------------------
 
@@ -71,6 +71,26 @@
   # Proportion of variables discretized in X
   p_cate <- c(1/3, 2/3, 1)
 
+  # Create skewness conditions (1 row = 1 level of the fcator)
+  skewness <- rbind(
+    c(0, 0, 0), # everything normal
+    c(2, 2, 2), # everything skewed
+    c(0, 2, -2), # normal, skewed right, skewed left
+    c(2, -2, -2) # skewed right, left, left
+  )
+
+  # Add match the skewness with increased kurtosis to make the sampling possible
+  kurtosis <- rbind(
+    c(0, 0, 0),
+    c(10, 10, 10),
+    c(0, 10, 10),
+    c(10, 10, 10)
+  )
+
+  # Give meaningful names
+  colnames(skewness) <- paste0("skewness", 1:length(parms$XTP_VAFr))
+  colnames(kurtosis) <- paste0("kurtosis", 1:length(parms$XTP_VAFr))
+
   # Number of components kept by the PCA extraction
   npcs <- c("naf", "nkaiser",       # non-graphical screeplot solutions
             parms$XTP_R2,           # (true) CPVE based
@@ -79,19 +99,15 @@
             parms$P)                # least summary
 
   # Discretization happens with equal intervals or not
-  interval <- c(TRUE, FALSE)
+  interval <- c(TRUE)
 
-  # Make Conditionsa
+  # Make Conditions based on vector experimental factors
   conds <- expand.grid(K = n_cate, # number of categories
                        D = p_cate, # ordinality degree
                        npcs = npcs,
                        interval = interval,
                        stringsAsFactors = TRUE)
 
-  # Append Condition Tag
-  conds$tag <- sapply(1:nrow(conds), function(i) {
-    conds$D <- round(conds$D*100,0) # to improve tag name
-    paste0(colnames(conds), conds[i, ], collapse = "_")
-  }
-  )
-
+  # Add the Skewness factor (data.frame experimental factor)
+  expand.grid.df <- function(...) Reduce(function(...) merge(..., by = NULL), list(...))
+  conds <- expand.grid.df(conds, cbind(skewness, kurtosis))
