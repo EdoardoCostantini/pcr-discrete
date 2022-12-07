@@ -48,7 +48,7 @@
   parms    <- list()
 
   # Simulation parameter
-  parms$dt_rep   <- 1e3 # number of data repetitionsù
+  parms$dt_rep   <- 1e3 # number of data repetitions
   parms$seed     <- 2021
   parms$nStreams <- 1000
 
