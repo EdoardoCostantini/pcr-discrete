@@ -3,6 +3,7 @@
 Simulation study to compare the out-of-sample prediction performance of Principal Component Regression with discrete data as input data.
 
 ## Summary of project
+
 The goal of the study was to understand how different ways of coding ordinal data impacts the quality of the low dimensional representation obtained by PCA.
 The quality of the representation is assessed based on the prediction error obtained by using the PCs extracted based on the different coding schemes.
 
@@ -37,11 +38,11 @@ In step 4, the PCs are computed based on different processing of the data:
 
 These parameters were kept constant in the simulation study:
 
-- sample size ($n = 1000$)
-- true number of principal components ($q = 3$)
-- total number of variables ($p = 12$)
-- explained variance by the true number of components in X ($CPVE = 0.8$)
-- explained variance by the true number of components in y ($R^2 = 0.8$)
+- sample size (n = 1000)
+- true number of principal components (q = 3)
+- total number of variables (p = 12)
+- explained variance by the true number of components in X (CPVE = 0.8)
+- explained variance by the true number of components in y (R^2 = 0.8)
 
 ### Simulation study experimental factors
 
@@ -68,46 +69,38 @@ You can also replicate the simulation on a personal computer by following these 
   check that every value here is what you want it to be.
 
 #### 2. Running the simulation
+
 - Open the script `code/run_sim.R` and set your working directory to its location
 - Define the number of desired repetitions by changing the parameter `reps`
 - Define the number of clusters for parallelization by changing the parameter `clus`
 - Run the script `code/run_sim.R`
 
 #### 3. Getting the results
+
 - Open the script `code/script_pooling.R` and run it to pool the results. 
   Pay attention that the script is reading the latest file saved in the 
   output folder.
 - Open the script `code/script_analysis.R` to obtain the plots
 
 ## Understanding the codebase
+
 If you want to play around with this simulation study and 
 include conditions of your liking keep in mind the following simulation structure:
-- Fixed and experimental factors are provided exclusively by in the
-  `init.R`.
+
+- Fixed and experimental factors are provided exclusively by in the `init.R`.
 - `run_sim.R` is a script that runs in parallel different calls of 
   the subroutine `doRep()` (located: `code/subroutines/doRep.R()`).
-  The script calls one instance of `doRep()` for every repetition 
-  desired. A *repetition* here is a cycle through all the conditions.
-- `doRep()` is a subroutine that calls `runCell()` for every condition 
-  in a sequential loop. 
-  In this set up, parallelization happens at the level of the repetitions,
-  not at the level of the conditions.
-- `runCell()` is a subroutine calling a collection of functions to
-  actually perform the steps of the simulation:
-  1. Generation of X - `generateXTP()` generates the true principal components (T) 
-     and observed items (X)
-  2. Generation of y - `generateDV()` generates the dependent variable as a linear 
-     combination of the true components
-  3. Discretization of (part of) X - `disData()` discretizes a condition specific 
-     proportion of variables in X
-  4. Preparation of different version of X - Disjunction table and dummy coded representations
-     of X are created
-  5. PC extraction - a collection of `extractPC**()` functions performs PCA according to the 
-     various approaches
-  6. Outcome measures are computed - `extractMSE()` the MSE and other desired outcomes are
-     extracted from previously created objects
-  7. Storing results - An object containing the outcome measures is stored as .rds file 
-     at every repetition for every condition in a temporary output folder.
+  The script calls one instance of `doRep()` for every repetition desired. A *repetition* here is a cycle through all the conditions.
+- `doRep()` is a subroutine that calls `runCell()` for every condition in a sequential loop.
+  In this set up, parallelization happens at the level of the repetitions, not at the level of the conditions.
+- `runCell()` is a subroutine calling a collection of functions to actually perform the steps of the simulation:
+  1. Generation of X - `generateXTP()` generates the true principal components (T) and observed items (X)
+  2. Generation of y - `generateDV()` generates the dependent variable as a linear combination of the true components
+  3. Discretization of (part of) X - `disData()` discretizes a condition specific proportion of variables in X
+  4. Preparation of different version of X - Disjunction table and dummy coded representations of X are created
+  5. PC extraction - a collection of `extractPC**()` functions performs PCA according to the various approaches
+  6. Outcome measures are computed - `extractMSE()` the MSE and other desired outcomes are extracted from previously created objects
+  7. Storing results - An object containing the outcome measures is stored as .rds file at every repetition for every condition in a temporary output folder.
 
 ### Repository structure
 
