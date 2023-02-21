@@ -26,6 +26,9 @@
   grep("_box", list.files(inDir), value = TRUE)
   gg_shape <- readRDS(paste0(inDir, "20220421_154258_box.rds"))
 
+  # Split variable into two useful columns
+  gg_shape[c("outcome", "method")] <- str_split_fixed(gg_shape$variable, "\\.", 2)
+
 # Plots -------------------------------------------------------------------
 
   # Define which outcome measure to plot
@@ -40,46 +43,52 @@
     collapse = "|"
   )
   npcs_conditions <- levels(gg_shape$npcs)#[1]
+  result <- unique(gg_shape$outcome)[4]
+  methods <- unique(gg_shape$method)
 
   # Define the caption of the plot
-  caption <- paste0("y axis: ", stringr::str_remove(result, "\\."),
+  caption <- paste0("y axis: ", result,
                     "; interval: ", int_conditions,
                     "; discrete: ", round(D_conditions, 2))
 
   # Obtain plot
   plot1 <- gg_shape %>%
     # Obtain Root MSE
-    # mutate(value = sqrt(value)) %>%
-    mutate(value = case_when(result == "mses." ~ sqrt(value),
-                             result != "mses." ~ value)) %>%
+    mutate(value = case_when(
+      result == "mses" ~ sqrt(value),
+      result != "mses" ~ value
+    )) %>%
     # Subset
-    filter(grepl(result, variable)) %>%
-    filter(grepl(methods, variable)) %>%
+    filter(outcome == result) %>%
+    filter(method %in% methods) %>%
     filter(D %in% D_conditions) %>%
     filter(K %in% K_conditions) %>%
     filter(interval %in% int_conditions) %>%
     filter(npcs %in% npcs_conditions) %>%
-    # Change labels of X axis
-    mutate(variable = fct_relabel(variable, str_replace, result, "")
-    ) %>%
     # Main Plot
-    ggplot(aes(x = variable, y = value)) +
+    ggplot(aes(x = method, y = value)) +
     geom_boxplot() +
     # Grid
-    facet_grid(rows = vars(factor(K)),
-               cols = vars(factor(npcs)),
-               scales = "fixed") +
+    facet_grid(
+      rows = vars(factor(K)),
+      cols = vars(factor(npcs)),
+      scales = "fixed"
+    ) +
     # Format
     # coord_cartesian(ylim = c(.9, 2.5)) +
-    theme(text = element_text(size = 15),
-          plot.title = element_text(hjust = 0.5),
-          axis.text = element_text(size = 15),
-          axis.text.x = element_text(angle = 45, hjust = 0.95),
-          axis.title = element_text(size = 15)) +
-    labs(title = stringr::str_remove(result, "\\."),
-         x     = NULL,
-         y     = NULL,
-         caption = caption)
+    theme(
+      text = element_text(size = 15),
+      plot.title = element_text(hjust = 0.5),
+      axis.text = element_text(size = 15),
+      axis.text.x = element_text(angle = 45, hjust = 0.95),
+      axis.title = element_text(size = 15)
+    ) +
+    labs(
+      title = result,
+      x = NULL,
+      y = NULL,
+      caption = caption
+    )
 
   # Look at plot
   plot1
